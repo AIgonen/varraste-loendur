@@ -1,0 +1,10 @@
+:root { --bg:#f2f3f1; --ink:#1b1e21; --ink2:#4e555c; --line:#d3d7d9; --accent:#e0b000; --surface:#fff }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, sans-serif; font-size: 16px }
+.wrap { max-width: 640px; margin: 0 auto; padding: 16px }
+h1 { font-size: 22px; border-top: 5px solid var(--accent); padding-top: 12px; margin: 0 0 12px }
+.btn { display: block; width: 100%; padding: 14px; font-size: 17px; font-weight: 600; border: 0; border-radius: 6px; background: var(--ink); color: #fff; margin: 8px 0 }
+.btn.sec { background: var(--surface); color: var(--ink); border: 1px solid var(--line) }
+.btn:disabled { opacity: .5 }
+canvas { width: 100%; height: auto; display: block; border-radius: 6px; background: #000 }
+.status { font-size: 14px; color: var(--ink2); min-height: 20px }

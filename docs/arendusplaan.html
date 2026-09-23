@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varraste Loendur – arendusplaan</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f3f1; --surface:#ffffff; --ink:#1b1e21; --ink-2:#4e555c; --ink-3:#7b838b;
+  --line:#d3d7d9; --steel:#5f6a73; --accent:#e0b000; --accent-ink:#5c4700; --accent-soft:#fff3c2;
+  --ok:#2f8a57; --ok-soft:#e3f2e9; --warn:#b8531f; --warn-soft:#fbe9df; --code-bg:#e9ebe9;
+  --a:#3b6ea5; --b:#8a5a2b; --c:#4f7a3a; --a-soft:#e4edf7; --b-soft:#f3e9de; --c-soft:#e6efe0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#181b1e; --surface:#21262a; --ink:#e8eaeb; --ink-2:#b4bbc1; --ink-3:#848c94;
+    --line:#353c42; --steel:#9aa5ae; --accent:#f0c419; --accent-ink:#f5d65a; --accent-soft:#3a3010;
+    --ok:#5cbf85; --ok-soft:#1f3a2b; --warn:#e0844f; --warn-soft:#3f2416; --code-bg:#2b3136;
+    --a:#8fb4dd; --b:#d3a778; --c:#9cc487; --a-soft:#23303f; --b-soft:#3a2d20; --c-soft:#26331f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#181b1e; --surface:#21262a; --ink:#e8eaeb; --ink-2:#b4bbc1; --ink-3:#848c94;
+  --line:#353c42; --steel:#9aa5ae; --accent:#f0c419; --accent-ink:#f5d65a; --accent-soft:#3a3010;
+  --ok:#5cbf85; --ok-soft:#1f3a2b; --warn:#e0844f; --warn-soft:#3f2416; --code-bg:#2b3136;
+  --a:#8fb4dd; --b:#d3a778; --c:#9cc487; --a-soft:#23303f; --b-soft:#3a2d20; --c-soft:#26331f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+header{border-top:6px solid var(--accent);padding-top:20px;margin-bottom:32px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:56px;line-height:1;margin:8px 0 12px;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--ink-2);max-width:68ch;margin:0}
+h2{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:600;font-size:30px;line-height:1.1;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line);text-wrap:balance}
+h3{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:600;font-size:21px;margin:22px 0 6px}
+p{max-width:70ch;margin:0 0 14px}
+ul{max-width:70ch;padding-left:20px;margin:0 0 14px}
+li{margin-bottom:6px}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);padding:14px 16px;border-radius:4px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.5;margin:0 0 16px}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:0 0 18px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.tablewrap{overflow-x:auto}
+.decision{background:var(--accent-soft);border-left:4px solid var(--accent);padding:14px 18px;margin:18px 0 24px;max-width:70ch}
+.decision strong{color:var(--accent-ink)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0 8px}
+.kv div{background:var(--surface);border:1px solid var(--line);padding:12px 14px}
+.kv .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.kv .v{font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:600;line-height:1.1}
+.kv .s{font-size:13px;color:var(--ink-2);margin-top:4px}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:16px 0 8px}
+.role{background:var(--surface);border:1px solid var(--line);padding:16px 18px;border-top:4px solid var(--steel)}
+.role.a{border-top-color:var(--a)}.role.b{border-top-color:var(--b)}.role.c{border-top-color:var(--c)}
+.role h3{margin:0 0 4px}
+.role .who{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);margin-bottom:10px}
+.role ul{padding-left:18px;margin:0;font-size:15px}
+.week{display:grid;grid-template-columns:86px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.week .n{font-family:"Barlow Condensed",sans-serif;font-size:28px;font-weight:700;color:var(--steel);line-height:1}
+.week .n small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:3px}
+.week h3{margin:0 0 8px}
+.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.task{padding:10px 12px;font-size:14px;border-left:3px solid var(--steel);background:var(--surface)}
+.task.a{border-left-color:var(--a);background:var(--a-soft)}.task.b{border-left-color:var(--b);background:var(--b-soft)}.task.c{border-left-color:var(--c);background:var(--c-soft)}
+.task .t{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.gate{margin-top:10px;padding:10px 14px;background:var(--accent-soft);border-left:3px solid var(--accent);font-size:14px;max-width:70ch}
+.gate strong{color:var(--accent-ink)}
+.pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:1px 8px;border-radius:2px;margin-right:4px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.cut td:first-child{font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Arendusplaan · v3 · 22. september 2026 · serverita variant, telefonitest tehtud</div>
+  <h1>Varraste Loendur · Arendusplaan</h1>
+  <p class="lede">Kaheksa nädalat, kolm arendajat, üks päev nädalas igaüks. Eesmärk: laos töötav pilootversioon, mille mudel on valitud mõõdetud numbrite, mitte arvamuse põhjal.</p>
+</header>
+
+<div class="kv">
+  <div><div class="k">Eelarve</div><div class="v">~24 inimpäeva</div><div class="s">3 inimest × 1 päev × 8 nädalat</div></div>
+  <div><div class="k">Tähtaeg</div><div class="v">Piloot 6. nädalal</div><div class="s">esimene töötav versioon laos</div></div>
+  <div><div class="k">Mudelivõrdlus</div><div class="v">2 mudelit, 1 datasett</div><div class="s">YOLO11n · D-FINE-N (mõlemad jooksevad telefonis)</div></div>
+  <div><div class="k">Eelarve rahas</div><div class="v">0 €</div><div class="s">Colab, GitHub Pages, Supabase tasuta plaan</div></div>
+</div>
+
+<h2>Mis seda plaani kujundab</h2>
+<p>Kolm asjaolu määravad kõik: meeskonnal on kokku umbes 24 tööpäeva, kellelgi pole varasemat ML-kogemust, ja soov on võrrelda mitut mudelit. Need kolm on omavahel pinges – mudelite võrdlus on tavaliselt see, kuhu aeg kaob. Seepärast on plaan ehitatud nii, et võrdlus oleks odav ja otsustav, mitte pikk ja lahtine.</p>
+
+<div class="decision"><strong>Kolm reeglit.</strong> Esiteks: treenime ainult Google Colabis valmis notebookidega, oma treeningserverit ei ehita – iga mudelikatse on "vaheta üks rida, vajuta Run, tule 30 minuti pärast tagasi". Teiseks: kõiki mudeleid mõõdetakse ühe ja sama kõrvalepandud 30 fotoga, mille arv on käsitsi kokku loetud – ilma selleta on võrdlus arvamus. Kolmandaks: rakendus ise on minimaalne (üks API, üks lehekülg), sest väärtus on mudelis, mitte kasutajaliideses.</div>
+
+
+<h2>Tasuta piirang: mida see muudab</h2>
+<p>Piirang "ainult tasuta tarkvara ja riistvara" on täidetav ilma plaani olemust muutmata – kogu tööriistakett on niikuinii avatud lähtekoodiga. Kolm kohta muutuvad: server, mudeli litsents ja treeninguaja planeerimine. Telefonitest (13.–22. sept, kolm Androidi, 0,7–0,9 s pildi kohta WebGPU-l) kinnitas, et mudel võib joosta telefoni brauseris – seega serverit ei ole üldse.</p>
+<div class="tablewrap">
+<table>
+<tr><th>Vajadus</th><th>Tasuta lahendus</th><th>Mida silmas pidada</th></tr>
+<tr><td>Treening (GPU)</td><td>Google Colab tasuta tase (T4 GPU)</td><td>GPU-aeg on päevas piiratud ja sessioon katkeb ~12 h järel. 200 foto treening mahub 30 minutisse, kolme mudelit ühel päeval ei pruugi saada – jagada mitmele päevale. Notebook salvestab tulemused Google Drive'i, mitte Colabi kettale.</td></tr>
+<tr><td>Rakenduse "server"</td><td><strong>Serverit ei ole.</strong> Mudel jookseb telefoni brauseris (ONNX Runtime Web, WebGPU); leht ja mudelifail GitHub Pagesil; andmebaas, fotohoidla ja sisselogimine Supabase'i tasuta plaanil</td><td>Ükski osa ei sõltu tasuta serveri jätkumisest. Supabase pausib projekti 7 päeva mittekasutusel – GitHub Actions teeb kord nädalas tühja päringu. Storage 1 GB = ~1000 fotot; piloodiks piisab.</td></tr>
+<tr><td>HTTPS telefoni kaamera jaoks</td><td>GitHub Pages annab HTTPS-i kaasa</td><td>Midagi seadistada pole. <code>coi-serviceworker</code> lubab WASM-il mitut lõime, kui WebGPU puudub.</td></tr>
+<tr><td>Märgistus</td><td>CVAT (ise majutatud, Docker) või Label Studio</td><td>Roboflow tasuta konto teeb datasetid avalikuks – kui fotod tohivad avalikud olla, on Roboflow mugavam ja annab ka tasuta eeltreenitud rebar-mudelid. Muidu CVAT samal kontoriarvutil.</td></tr>
+<tr><td>Mudeli litsents</td><td>Katsetamiseks YOLO11n (AGPL) on vaba. Kasutuselevõtuks kaks tasuta teed: rakenduse lähtekoodi avalikustamine AGPL-i all või <strong>D-FINE-N</strong> (Apache 2.0, ~4 M parameetrit, jookseb telefonis)</td><td>RF-DETR jääb välja – 30 M parameetrit on telefoni jaoks liiga raske. D-FINE-N on ainus vaba litsentsiga kandidaat, mis telefoni mahub; seega ta on võrdluses teine mudel, mitte varuvariant.</td></tr>
+<tr><td>Rakendus</td><td>React + Vite + TypeScript PWA, onnxruntime-web, supabase-js</td><td>Pythonit tootes ei ole – ainult Colabis treeninguks. Kogu rakendus on meeskonna tugev ala.</td></tr>
+</table>
+</div>
+<div class="decision"><strong>Tasuta variandi kõige nõrgem koht on nüüd mudelivalik, mitte server.</strong> Telefon piirab mudeli suuruse ~10 MB-ni, seega raskemad ja täpsemad detektorid jäävad kättesaamatuks. Kui piloodis selgub, et YOLO11n/D-FINE-N täpsus ei piisa, on esimene "mittetasuta" otsus pilveserver (~17 €/kuus) raskema mudeli jaoks – arhitektuur lubab seda hiljem lisada ilma telefonirakendust ümber ehitamata.</div>
+
+<h2>Rollid</h2>
+<p>Iga inimene omab ühte voogu ja kõik voog käivad paralleelselt – ühe päeva nädalas puhul ei saa keegi kedagi oodata. Rollide juures on ka see, mida nad peavad õppima; see on plaani osa, mitte lisa.</p>
+<div class="roles">
+  <div class="role a"><h3>Andmed</h3><div class="who">Arendaja A</div>
+    <ul><li>Pildistamise protokoll ja fotode kogumine laost</li><li>Märgistus (Roboflow / CVAT), datasetti versioonid</li><li>Kuldne testikomplekt: 30 fotot, käsitsi loetud arv</li><li>Tulemuste hindamisskript (loendusviga foto kohta)</li></ul>
+    <p style="font-size:13px;color:var(--ink-2);margin:10px 0 0">Õpib: märgistustööriist, YOLO datasetiformaat, mis on hea/halb treeningpilt.</p></div>
+  <div class="role b"><h3>Mudelid</h3><div class="who">Arendaja B</div>
+    <ul><li>Colab-notebookid: YOLO11n ja D-FINE-N treening</li><li>Katsete logi: mudel, seaded, tulemus, aeg</li><li>Eksport ONNX-i, kiiruse kontroll testlehega telefonis</li><li>Ümbertreening piloodi andmetelt</li></ul>
+    <p style="font-size:13px;color:var(--ink-2);margin:10px 0 0">Õpib: Ultralytics ja rfdetr teegid, mAP vs loendusviga, mida augmentatsioon teeb.</p></div>
+  <div class="role c"><h3>Rakendus</h3><div class="who">Arendaja C</div>
+    <ul><li>PWA: kaamera, ONNX-mudeli käivitus, ringid pildil, parandamine, kinnitus</li><li>Supabase: tabelid, RLS, Storage, Auth</li><li>GitHub Pages paigaldus, offline-järjekord</li><li>Piloodi tugi laos</li></ul>
+    <p style="font-size:13px;color:var(--ink-2);margin:10px 0 0">Õpib: onnxruntime-web, pildi eeltöötlus canvasel, NMS JavaScriptis (testlehes on kõik kolm juba olemas).</p></div>
+</div>
+
+<h2>Nädalaplaan</h2>
+<p>Iga nädal lõpeb 30-minutilise ühise kõnega. Tähtaeg ei ole "8. nädal", vaid <strong>piloot laos 6. nädalal</strong> – kaks viimast nädalat on päris andmetelt õppimiseks ja otsuseks.</p>
+
+<div class="week"><div class="n">1<small>ettevalmistus</small></div><div>
+  <h3>Fotod, tööriistad, nullproov</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Pildistamisjuhend (otsavaade, kogu ots kaadris, päevavalgus). Esimesed 100 fotot vähemalt 10 erinevast kimbust.</div>
+    <div class="task b"><div class="t">Mudelid</div>Colab + Roboflow konto. Jooksutab avaliku rebar-mudeli meie 3 proovifoto peal – esimene tunne, kui kaugel valmis mudel on.</div>
+    <div class="task c"><div class="t">Rakendus</div>Repo Vite + React + TS, GitHub Pages töötab. Supabase projekt: tabelid <code>count</code>, <code>detection</code>, Storage bucket, Auth. Testlehe kood (kaamera, mudel, NMS) tõstetakse rakendusse.</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">2<small>andmed</small></div><div>
+  <h3>Märgistus ja esimene mudel</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Märgistab 100 fotot (~3 min/foto). Paneb 30 fotot kõrvale kuldseks testiks ja loeb neil vardad käsitsi üle – need ei lähe kunagi treeningusse.</div>
+    <div class="task b"><div class="t">Mudelid</div>YOLO11n baastreening 70 fotol Colabis. Hindamisskript koos A-ga: iga testfoto kohta ennustatud arv vs tegelik.</div>
+    <div class="task c"><div class="t">Rakendus</div>Rakendus jooksutab COCO-mudelit (nagu testleht) ja salvestab foto + tulemuse Supabase'i. Sisselogimine PIN-iga.</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">3<small>võrdlus</small></div><div>
+  <h3>Kolm mudelit samal datasetil</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>100 fotot juurde, rõhk rasketel juhtudel: paberimähis, vari, segased läbimõõdud, viltune nurk. Märgistab.</div>
+    <div class="task b"><div class="t">Mudelid</div>Treenib D-FINE-N sama datasetiga, sama testiga. Täidab võrdlustabeli (allpool). Mõõdab mõlema kiiruse telefonis testlehega.</div>
+    <div class="task c"><div class="t">Rakendus</div>Puutega ringi lisamine/eemaldamine, kinnitus; parandatud otsad lähevad Supabase'i staatusega. Offline-järjekord (IndexedDB).</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">4<small>otsus</small></div><div>
+  <h3>Mudel valitakse, rakendus saab kinnituse</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Treenib uuesti 200 fotoga (nüüd juba ise, B juhendab). Dokumenteerib, millised fotod mudelile raskeks jäid.</div>
+    <div class="task b"><div class="t">Mudelid</div>Ekspordib valitud mudeli ONNX-i (1024 px, opset 12), paneb repo <code>public/</code> kausta. Kirjutab eksportskripti, mida edaspidi iga versioon kasutab.</div>
+    <div class="task c"><div class="t">Rakendus</div>Kimbu tähise sisestus, mudeli versioon iga loenduse juures, vigade logimine Supabase'i tabelisse.</div>
+  </div>
+  <div class="gate"><strong>Väravaotsus 4. nädala lõpus.</strong> Valime mudeli võrdlustabeli järgi. Kui parim mudel teeb testil keskmiselt üle 3 varda viga, ei lähe piloodi, vaid kulutame 5. nädala andmetele – see on peaaegu alati andmete, mitte mudeli probleem.</div>
+</div></div>
+
+<div class="week"><div class="n">5<small>integratsioon</small></div><div>
+  <h3>Mudel rakenduses, paigaldus serverisse</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Testib rakendust laos 20 päris kimbuga, kirjutab iga vea üles. Koostab töötajale ühe A4 juhendi.</div>
+    <div class="task b"><div class="t">Mudelid</div>Kindluse lävi (confidence) kalibreeritud testfotodel nii, et loendusviga oleks minimaalne. Kontrollib, et brauseri NMS annab sama tulemuse kui Ultralytics.</div>
+    <div class="task c"><div class="t">Rakendus</div>Service worker: leht ja mudel vahemälus, teine avamine ilma võrguta. GitHub Action, mis hoiab Supabase'i ärkvel. Töötajate kontod.</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">6<small>piloot</small></div><div>
+  <h3>Päris töötajad, päris kimbud</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>On esimestel päevadel laos kaasas. Kogub tagasisidet: mis on segane, kus mudel eksib.</div>
+    <div class="task b"><div class="t">Mudelid</div>Ekspordib piloodi kinnitused treeningformaati – esimene "tasuta" märgistatud datasett.</div>
+    <div class="task c"><div class="t">Rakendus</div>Parandab piloodis ilmnenud UX-probleemid. Logid ja vigade jälgimine.</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">7<small>õppimine</small></div><div>
+  <h3>Ümbertreening päris andmetelt</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Kontrollib piloodi kinnitusi pisteliselt (kas töötajad kinnitasid õigesti). Laiendab kuldset testi 50 fotoni.</div>
+    <div class="task b"><div class="t">Mudelid</div>Treenib v0.2 piloodi andmetega, võrdleb v0.1-ga samal testil. Kui parem, vahetab välja.</div>
+    <div class="task c"><div class="t">Rakendus</div>Mudeli versioon iga loenduse juures; lihtne aruandevaade (kimp, arv, kuupäev, kinnitaja).</div>
+  </div>
+</div></div>
+
+<div class="week"><div class="n">8<small>otsus</small></div><div>
+  <h3>Kokkuvõte ja edasine tee</h3>
+  <div class="tasks">
+    <div class="task a"><div class="t">Andmed</div>Piloodi numbrid: loenduste arv, keskmine viga, kui tihti pidi töötaja parandama.</div>
+    <div class="task b"><div class="t">Mudelid</div>Litsentsiotsus: kui piloodis jooksis YOLO – kas rakenduse lähtekood avalikustatakse (AGPL) või minnakse D-FINE-N peale (Apache 2.0). Mõlemad on tasuta.</div>
+    <div class="task c"><div class="t">Rakendus</div>Tehniline võlg kirja, järgmise etapi soovid (ERP-liidestus, läbimõõt, raskem mudel serveris kui täpsus ei piisa).</div>
+  </div>
+  <div class="gate"><strong>Väravaotsus 8. nädala lõpus.</strong> Kasutusele, jätkata piloodina, või lõpetada. Otsuse alus: kas töötaja loendab rakendusega kiiremini ja täpsemalt kui käsitsi.</div>
+</div></div>
+
+<h2>Mudelikatsete plaan</h2>
+<p>Kaks mudelit, sest telefon piirab valikut: ainult kerged detektorid (alla ~10 MB ONNX) jooksevad brauseris alla sekundiga. Mõlemad treenitakse täpselt sama datasetiga, samade epohhidega ja hinnatakse samal 30-fotolisel testil. Tabel täidetakse 3. nädalal; tühjad lahtrid on koht, kuhu numbrid tulevad.</p>
+<div class="tablewrap">
+<table>
+<tr><th>Mudel</th><th>Litsents</th><th>Miks katsetame</th><th>Keskm. viga (vardaid)</th><th>Täpselt õigeid fotosid</th><th>±2 sees</th><th>Aeg telefonis / foto</th></tr>
+<tr><td>YOLO11n</td><td><span class="pill warn">AGPL</span></td><td>Baas: kõige lihtsam, kõige rohkem näiteid netis; kiirus telefonis juba mõõdetud (0,7–0,9 s)</td><td>—</td><td>—</td><td>—</td><td>0,7–0,9 s (COCO-mudel)</td></tr>
+<tr><td>D-FINE-N</td><td><span class="pill ok">Apache 2.0</span></td><td>Ainus vaba litsentsiga kandidaat, mis telefoni mahub; DETR-tüüp ilma NMS-ita on tihedatel otstel tugev</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td style="color:var(--ink-3)">YOLO11s <em>(ainult kui aega jääb)</em></td><td><span class="pill warn">AGPL</span></td><td style="color:var(--ink-3)">Näitab, kas suurem mudel annab täpsust – kui jah, on see argument serveri kasuks hiljem</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+</table>
+</div>
+<p><strong>Mõõdik on loendusviga, mitte mAP.</strong> Treeningtööriistad näitavad mAP-i, aga laole loeb, mitu varrast läks valesti. Hindamisskript teeb iga testfoto kohta: <code>|ennustatud − tegelik|</code>, ja raporteerib keskmise, täpselt õigete osakaalu ja ±2 sisse jäävate osakaalu. Sama skript jookseb hiljem iga uue mudeliversiooni peal.</p>
+<p><strong>Kindlad seaded:</strong> sisendresolutsioon 1024 px (varda ots ~40 px), 100 epohhi, augmentatsioon: pööramine, heledus, kerge hägu; <em>mitte</em> peegeldamine mosaiigiga üle piiri – see tekitab poolikuid otsi. Eeltreening: avalik rebar-datasett Roboflow Universe'ist, seejärel meie fotod.</p>
+
+<h2>Mida teha, kui aeg saab otsa</h2>
+<p>Ühe päeva nädalas puhul kaob kergelt terve nädal. Kärpimise järjekord on eelnevalt kokku lepitud, et seda ei peaks keset stressi otsustama.</p>
+<div class="tablewrap">
+<table class="cut">
+<tr><th>Kärbe</th><th>Mida kaotame</th><th>Millal</th></tr>
+<tr><td>YOLO11s jääb ära</td><td>Midagi olulist ei kaota</td><td>Kohe, kui 3. nädal venib</td></tr>
+<tr><td>D-FINE-N lükkub 7. nädalasse</td><td>Litsentsiotsus hilineb, piloot jookseb YOLO-ga</td><td>Kui 3. nädalal on aega ainult ühe treeningu jagu</td></tr>
+<tr><td>Kimbu tähis, offline-järjekord, aruandevaade</td><td>Loendused ei ole kimbuga seotud; ilma võrguta tulemus ei salvestu</td><td>Kui 5. nädalal pole rakendus valmis</td></tr>
+<tr><td>PWA puuteparandus → ainult "õige / vale + õige arv"</td><td>Parandatud ringid treeninguks; jääb ainult õige arv</td><td>Viimane abinõu</td></tr>
+<tr><td style="color:var(--warn)">Kuldne testikomplekt</td><td>Ei kärbi kunagi – ilma selleta pole ühelgi numbril tähendust</td><td>—</td></tr>
+</table>
+</div>
+
+<h2>Riskid, mis on just selle meeskonna omad</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Risk</th><th>Leevendus</th></tr>
+<tr><td>Üks päev nädalas: iga kord alustatakse "kus me olime"</td><td>Iga nädala lõpus 5-realine kirjalik seis repo README-s; järgmise nädala esimene tund on selle lugemine, mitte kõne.</td></tr>
+<tr><td>ML-teadmine koondub ühte inimesse (B)</td><td>4. nädalal treenib A ise; notebookid on repo osa koos kommentaaridega. Kui B puudub, saab teine inimene ikka "Run" vajutada.</td></tr>
+<tr><td>Treening võtab tunde, aga päev on ainult üks</td><td>Colab jookseb ilma inimeseta – treening käivitatakse päeva alguses või eelmisel õhtul, tulemus vaadatakse hiljem. Tasuta Colabi GPU-kvoot võib päeva keskel otsa saada: kolm mudelit jagada kolme päeva peale, kaalud salvestada Drive'i iga 10 epohhi järel.</td></tr>
+<tr><td>Supabase pausib või tasuta plaan muutub</td><td>GitHub Action hoiab ärkvel; andmebaasist kord nädalas CSV-eksport repo kõrvale. Postgres on standard – kolimine mujale on tundide töö.</td></tr>
+<tr><td>Mõni laotelefon on aeglasem kui testitud kolm</td><td>Testleht jääb alles; iga uus telefon testitakse enne kasutuselevõttu. WASM-varuvariant töötab ka ilma WebGPU-ta, lihtsalt aeglasemalt.</td></tr>
+<tr><td>Fotod on liiga ühesugused (üks ladu, üks päev, üks telefon)</td><td>Protokoll nõuab vähemalt 3 pildistajat, 2 telefoni, erinevad kellaajad. Test sisaldab teadlikult raskeid fotosid.</td></tr>
+<tr><td>Roboflow tasuta konto teeb datasetid avalikuks</td><td>Kui fotod on ärisaladus: CVAT ise majutatud (Docker, 1 tund) või Label Studio. Otsustatakse 1. nädalal.</td></tr>
+<tr><td>Töötajad kinnitavad numbri läbi vaatamata</td><td>Kinnitus lubatud alles pärast pildi kerimist; piloodis loeb A pisteliselt üle.</td></tr>
+</table>
+</div>
+
+<h2>Esimese nädala konkreetne nimekiri</h2>
+<pre>A  □ pildistamisjuhend (1 lk, koos näidisfotoga hea/halb)
+   □ 100 fotot, failinimi = kimbu tähis + järjekorranumber
+   □ otsus: Roboflow (avalik, tasuta) või CVAT kontoriarvutil (privaatne, tasuta)
+B  □ Colab konto, Roboflow konto
+   □ jooksutab universe.roboflow.com rebar-mudeli meie 3 fotol, salvestab tulemuse
+   □ Ultralytics quickstart läbi: yolo predict ühel pildil
+C  □ repo Vite + React + TS, GitHub Pages töötab
+   □ Supabase projekt: tabelid, Storage bucket, Auth
+   □ testlehe kood (kaamera, mudel, NMS) rakendusse
+Kõik □ reede 30 min: mis toimis, mis mitte, järgmise nädala 3 asja</pre>
+</div>
+
+</body>
+</html>

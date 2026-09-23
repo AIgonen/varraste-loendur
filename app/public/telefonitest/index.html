@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varraste Loendur – telefonitest</title>
+<style>
+  :root{--bg:#f2f3f1;--ink:#1b1e21;--ink2:#4e555c;--line:#d3d7d9;--accent:#e0b000;--ok:#2f8a57;--warn:#b8531f;--surface:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;font-size:16px;line-height:1.5}
+  .wrap{max-width:640px;margin:0 auto;padding:16px}
+  h1{font-size:22px;margin:0 0 4px;border-top:5px solid var(--accent);padding-top:12px}
+  .sub{color:var(--ink2);font-size:14px;margin:0 0 16px}
+  .btn{display:block;width:100%;padding:14px;font-size:17px;font-weight:600;border:0;border-radius:6px;background:var(--ink);color:#fff;margin:8px 0;cursor:pointer}
+  .btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .btn:disabled{opacity:.5}
+  input[type=file]{display:none}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin:10px 0}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .row:last-child{border-bottom:0}
+  .row b{font-variant-numeric:tabular-nums}
+  .ok{color:var(--ok)}.warn{color:var(--warn)}
+  canvas{width:100%;height:auto;display:block;border-radius:6px;background:#000}
+  #status{font-size:14px;color:var(--ink2);min-height:20px}
+  .verdict{font-size:18px;font-weight:700;padding:10px 12px;border-radius:6px;margin:10px 0}
+  .verdict.ok{background:#e3f2e9;color:var(--ok)}.verdict.mid{background:#fff3c2;color:#5c4700}.verdict.bad{background:#fbe9df;color:var(--warn)}
+  pre{font-size:12px;background:#e9ebe9;padding:10px;border-radius:4px;overflow-x:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Varraste Loendur – telefonitest</h1>
+  <p class="sub">Mõõdab, kui kiiresti YOLO11n (1024 px) jookseb <em>selles</em> telefonis brauseri sees. Mudel on üldine (COCO), see ei loe veel vardaid – test on ainult kiiruse kohta.</p>
+
+  <div class="card">
+    <div class="row"><span>Seade</span><b id="ua">–</b></div>
+    <div class="row"><span>Käivitusviis</span><b id="ep">–</b></div>
+    <div class="row"><span>Mudeli laadimine</span><b id="tload">–</b></div>
+    <div class="row"><span>1. tuvastus (soojendus)</span><b id="t1">–</b></div>
+    <div class="row"><span>Keskmine (3 järgmist)</span><b id="tavg">–</b></div>
+  </div>
+
+  <div id="verdict"></div>
+
+  <button class="btn" id="load">1 · Laadi mudel</button>
+  <label class="btn sec" id="camlbl" style="text-align:center;opacity:.5">2 · Pildista või vali foto
+    <input type="file" id="file" accept="image/*" capture="environment" disabled>
+  </label>
+  <button class="btn sec" id="bench" disabled>3 · Jooksuta 4× samal fotol</button>
+  <div id="status"></div>
+
+  <canvas id="cv" width="1024" height="1024"></canvas>
+
+  <div class="card">
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:6px">Tulemus kopeerimiseks (saada arendajale):</div>
+    <pre id="report">–</pre>
+    <button class="btn sec" id="copy">Kopeeri tulemus</button>
+  </div>
+</div>
+
+<script src="../coi-serviceworker.min.js"></script>
+<script src="../ort/ort.all.min.js"></script>
+<script>
+const MODEL_URL = "../model.onnx";
+const SIZE = 1024;
+const $ = id => document.getElementById(id);
+let session = null, epUsed = '-', lastImage = null, times = [];
+
+$('ua').textContent = (navigator.userAgentData?.platform || navigator.platform) + ' · ' + (navigator.hardwareConcurrency || '?') + ' tuuma' + (navigator.deviceMemory ? ' · ' + navigator.deviceMemory + ' GB' : '');
+
+function status(t){ $('status').textContent = t; }
+function ms(x){ return Math.round(x) + ' ms'; }
+
+async function loadModel(){
+  $('load').disabled = true;
+  ort.env.wasm.wasmPaths = new URL("../ort/", location.href).href;
+  ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+  const t0 = performance.now();
+  status('Laen mudelit (~11 MB)…');
+  const providers = navigator.gpu ? ['webgpu', 'wasm'] : ['wasm'];
+  try {
+    session = await ort.InferenceSession.create(MODEL_URL, { executionProviders: providers, graphOptimizationLevel: 'all' });
+    epUsed = (navigator.gpu && ort.env.webgpu && ort.env.webgpu.adapter) ? 'webgpu' : 'wasm';
+  } catch(e){ console.warn('ebaõnnestus', e); status('Mudeli laadimine ebaõnnestus: ' + e.message); return; }
+  const tl = performance.now() - t0;
+  $('ep').textContent = epUsed === 'webgpu' ? 'WebGPU (GPU)' : 'WASM (CPU, ' + ort.env.wasm.numThreads + ' lõime)';
+  $('tload').textContent = ms(tl);
+  status('Mudel laetud. Nüüd pildista.');
+  $('file').disabled = false; $('camlbl').style.opacity = 1;
+  report();
+}
+
+function letterbox(img){
+  const c = $('cv'), ctx = c.getContext('2d');
+  ctx.fillStyle = '#727272'; ctx.fillRect(0,0,SIZE,SIZE);
+  const r = Math.min(SIZE/img.width, SIZE/img.height);
+  const w = Math.round(img.width*r), h = Math.round(img.height*r);
+  const dx = Math.floor((SIZE-w)/2), dy = Math.floor((SIZE-h)/2);
+  ctx.drawImage(img, dx, dy, w, h);
+  const data = ctx.getImageData(0,0,SIZE,SIZE).data;
+  const n = SIZE*SIZE, f = new Float32Array(3*n);
+  for (let i=0;i<n;i++){ f[i]=data[i*4]/255; f[n+i]=data[i*4+1]/255; f[2*n+i]=data[i*4+2]/255; }
+  return new ort.Tensor('float32', f, [1,3,SIZE,SIZE]);
+}
+
+function postprocess(out, conf=0.25, iou=0.5){
+  const d = out.data, N = out.dims[2], C = out.dims[1]-4; // [1,84,N]
+  const boxes = [];
+  for (let i=0;i<N;i++){
+    let best=0, cls=-1;
+    for (let c=0;c<C;c++){ const s=d[(4+c)*N+i]; if (s>best){best=s;cls=c;} }
+    if (best<conf) continue;
+    const cx=d[i], cy=d[N+i], w=d[2*N+i], h=d[3*N+i];
+    boxes.push({x1:cx-w/2,y1:cy-h/2,x2:cx+w/2,y2:cy+h/2,s:best,cls});
+  }
+  boxes.sort((a,b)=>b.s-a.s);
+  const keep=[];
+  for (const b of boxes){
+    let ok=true;
+    for (const k of keep){
+      const ix=Math.max(0,Math.min(b.x2,k.x2)-Math.max(b.x1,k.x1)), iy=Math.max(0,Math.min(b.y2,k.y2)-Math.max(b.y1,k.y1));
+      const inter=ix*iy, uni=(b.x2-b.x1)*(b.y2-b.y1)+(k.x2-k.x1)*(k.y2-k.y1)-inter;
+      if (inter/uni>iou){ok=false;break;}
+    }
+    if (ok) keep.push(b);
+  }
+  return keep;
+}
+
+async function runOnce(){
+  const t0 = performance.now();
+  const input = letterbox(lastImage);
+  const tp = performance.now();
+  const res = await session.run({ images: input });
+  const ti = performance.now();
+  const boxes = postprocess(res.output0);
+  const ctx = $('cv').getContext('2d');
+  ctx.lineWidth = 3; ctx.strokeStyle = '#e0b000'; ctx.fillStyle = '#e0b000'; ctx.font = '20px system-ui';
+  for (const b of boxes){ ctx.strokeRect(b.x1,b.y1,b.x2-b.x1,b.y2-b.y1); ctx.fillText(b.cls+' '+b.s.toFixed(2), b.x1+4, b.y1+22); }
+  return { total: performance.now()-t0, pre: tp-t0, infer: ti-tp, n: boxes.length };
+}
+
+$('file').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  status('Loen fotot…');
+  const img = new Image();
+  img.onload = async () => {
+    lastImage = img; times = [];
+    status('Esimene tuvastus (soojendus)…');
+    const r = await runOnce();
+    $('t1').textContent = ms(r.total);
+    status(`Valmis: ${r.n} objekti, ${ms(r.infer)} mudel + ${ms(r.pre)} eeltöötlus. Nüüd vajuta 3.`);
+    $('bench').disabled = false;
+    report(r);
+  };
+  img.src = URL.createObjectURL(f);
+});
+
+$('bench').addEventListener('click', async () => {
+  $('bench').disabled = true; times = [];
+  for (let i=0;i<4;i++){ status(`Jooksutan ${i+1}/4…`); const r = await runOnce(); if (i>0) times.push(r.total); }
+  const avg = times.reduce((a,b)=>a+b,0)/times.length;
+  $('tavg').textContent = ms(avg);
+  const v = $('verdict');
+  if (avg < 3000){ v.className='verdict ok'; v.textContent = `Sobib: ${(avg/1000).toFixed(1)} s pildi kohta`; }
+  else if (avg < 5000){ v.className='verdict mid'; v.textContent = `Piiripealne: ${(avg/1000).toFixed(1)} s – töötab, aga tundub aeglane`; }
+  else { v.className='verdict bad'; v.textContent = `Liiga aeglane: ${(avg/1000).toFixed(1)} s – see telefon vajab serverit`; }
+  status('Test tehtud. Kopeeri tulemus ja saada arendajale.');
+  $('bench').disabled = false;
+  report(null, avg);
+});
+
+function report(r, avg){
+  $('report').textContent = [
+    'Seade: ' + navigator.userAgent,
+    'Tuumi: ' + (navigator.hardwareConcurrency||'?') + ', mälu: ' + (navigator.deviceMemory||'?') + ' GB',
+    'Käivitus: ' + epUsed + (epUsed==='wasm' ? ' (' + ort.env.wasm.numThreads + ' lõime)' : ''),
+    'Laadimine: ' + $('tload').textContent,
+    'Soojendus: ' + $('t1').textContent,
+    'Keskmine: ' + (avg ? ms(avg) : $('tavg').textContent),
+    'Foto: ' + (lastImage ? lastImage.width + '×' + lastImage.height : '–'),
+    'Kuupäev: ' + new Date().toISOString().slice(0,16).replace('T',' ')
+  ].join('\n');
+}
+
+$('copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('report').textContent); status('Kopeeritud.'); }
+  catch { status('Kopeerimine ei õnnestunud – vali tekst käsitsi.'); }
+});
+$('load').addEventListener('click', loadModel);
+</script>
+</body>
+</html>

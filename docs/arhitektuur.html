@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varraste Loendur – arhitektuuri visand</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f3f1; --surface:#ffffff; --ink:#1b1e21; --ink-2:#4e555c; --ink-3:#7b838b;
+  --line:#d3d7d9; --steel:#5f6a73; --accent:#e0b000; --accent-ink:#5c4700; --accent-soft:#fff3c2;
+  --paper:#c9a46b; --paper-soft:#f3e7d1; --ok:#2f8a57; --warn:#b8531f; --code-bg:#e9ebe9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#181b1e; --surface:#21262a; --ink:#e8eaeb; --ink-2:#b4bbc1; --ink-3:#848c94;
+    --line:#353c42; --steel:#9aa5ae; --accent:#f0c419; --accent-ink:#f5d65a; --accent-soft:#3a3010;
+    --paper:#d1ad76; --paper-soft:#3a3222; --ok:#5cbf85; --warn:#e0844f; --code-bg:#2b3136;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#181b1e; --surface:#21262a; --ink:#e8eaeb; --ink-2:#b4bbc1; --ink-3:#848c94;
+  --line:#353c42; --steel:#9aa5ae; --accent:#f0c419; --accent-ink:#f5d65a; --accent-soft:#3a3010;
+  --paper:#d1ad76; --paper-soft:#3a3222; --ok:#5cbf85; --warn:#e0844f; --code-bg:#2b3136;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+header{border-top:6px solid var(--accent);padding-top:20px;margin-bottom:40px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:56px;line-height:1;margin:8px 0 12px;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--ink-2);max-width:65ch;margin:0}
+h2{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:600;font-size:30px;line-height:1.1;margin:56px 0 14px;padding-top:14px;border-top:1px solid var(--line);text-wrap:balance}
+h3{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:600;font-size:21px;margin:26px 0 6px}
+p{max-width:68ch;margin:0 0 14px}
+ul{max-width:68ch;padding-left:20px;margin:0 0 14px}
+li{margin-bottom:6px}
+code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.88em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);padding:14px 16px;border-radius:4px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.5;margin:0 0 16px}
+figure{margin:20px 0 28px}
+figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+figcaption{font-size:14px;color:var(--ink-2);margin-top:8px;max-width:68ch}
+.figbox{background:var(--surface);border:1px solid var(--line);padding:16px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:0 0 18px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+td:first-child{font-weight:600;white-space:nowrap}
+.tablewrap{overflow-x:auto}
+.decision{background:var(--accent-soft);border-left:4px solid var(--accent);padding:14px 18px;margin:18px 0 24px;max-width:68ch}
+.decision strong{color:var(--accent-ink)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0 24px}
+.kv div{background:var(--surface);border:1px solid var(--line);padding:12px 14px}
+.kv .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.kv .v{font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:600;line-height:1.1}
+.phase{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.phase .n{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;color:var(--steel);line-height:1}
+.phase .n small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:2px}
+.phase p{margin:0 0 4px}
+.phase .out{font-size:14px;color:var(--ink-2)}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:1px 7px;border:1px solid var(--line);border-radius:2px;color:var(--ink-2);margin-right:4px}
+.risk td:nth-child(2){color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Arhitektuuri visand · v0.2 · 22. september 2026 · serverita variant, kinnitatud telefonitestiga</div>
+  <h1>Varraste Loendur</h1>
+  <p class="lede">Rakendus, mis loeb foto järgi kokku kimpu pakitud metallvardad. Laotöötaja pildistab telefoniga kimbu otsa, mudel jookseb otse telefoni brauseris, tuvastab iga varda otsa ja pakub arvu, mida töötaja saab enne kinnitamist parandada. Serverit ei ole – ainult staatiline leht ja tasuta andmebaas.</p>
+</header>
+
+<div class="kv">
+  <div><div class="k">Platvorm</div><div class="v">Mudel telefoni brauseris</div></div>
+  <div><div class="k">Tuvastus</div><div class="v">YOLO11n · ONNX Runtime Web</div></div>
+  <div><div class="k">Mõõdetud kiirus</div><div class="v">0,7–0,9 s pildi kohta</div></div>
+  <div><div class="k">Kulu</div><div class="v">0 € / kuus</div></div>
+</div>
+
+<h2>Miks just nii</h2>
+<p>Piirang on ainult tasuta tarkvara ja teenused, ilma oma riistvarata. 2026. aastal on tasuta pilveserverid, kuhu ML-mudel mahuks, kadunud või ebakindlad – seega on ainus tasuta variant, mis ei sõltu kellegi heast tahtest, panna mudel jooksma telefoni endasse. Küsimus oli, kas laotelefonid on selleks piisavalt kiired. Test kolmel päris telefonil (sh 2019. aasta Galaxy S10e) andis vastuseks jah: kõik kasutasid WebGPU-d ja loendasid 1024 px pildi alla sekundiga.</p>
+
+<div class="tablewrap">
+<table>
+<tr><th>Telefon</th><th>Aasta</th><th>Mälu</th><th>Käivitus</th><th>Mudeli laadimine</th><th>Keskmine / pilt</th></tr>
+<tr><td>Xiaomi (2510ERA8BG), Android 16</td><td>2025</td><td>8 GB</td><td>WebGPU</td><td>7,9 s</td><td><strong>0,90 s</strong></td></tr>
+<tr><td>Samsung Galaxy A53, Android 16</td><td>2022</td><td>4 GB</td><td>WebGPU</td><td>3,5 s</td><td><strong>0,81 s</strong></td></tr>
+<tr><td>Samsung Galaxy S10e, Android 12</td><td>2019</td><td>4 GB</td><td>WebGPU</td><td>21,3 s</td><td><strong>0,71 s</strong></td></tr>
+</table>
+</div>
+<p style="font-size:14px;color:var(--ink-2)">Mõõdetud 13.–22. septembril 2026 testlehega. Kõik kolm testi tehti Facebooki sisemises brauseris – ehk töötab isegi seal. Mudeli laadimine on ühekordne (hiljem vahemälust); 21 s S10e-l oli võrgu, mitte telefoni kiirus.</p>
+
+<div class="decision"><strong>Põhiotsus:</strong> inimene jääb ahelasse. Rakendus ei väida kunagi lõplikku arvu ise – ta pakub arvu koos ringidega pildil, töötaja lisab või eemaldab puuduvad/liigsed ja kinnitab. Kinnitatud otsad salvestatakse koos fotoga ja neist saab järgmise treeningu andmestik.</div>
+
+<h2>Süsteemi ülevaade</h2>
+<figure>
+<div class="figbox">
+<svg viewBox="0 0 860 400" role="img" aria-label="Telefoni brauseris jooksev PWA laeb staatilise lehe ja ONNX-mudeli GitHub Pagesilt, jooksutab mudeli kohapeal ja salvestab foto ning kinnitatud loenduse Supabase'i; treeninguahel ekspordib Supabase'ist andmed Colabisse ja avaldab uue mudeli GitHub Pagesile.">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  <marker id="arrY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e0b000"/></marker>
+</defs>
+<g font-family="IBM Plex Sans, sans-serif" font-size="12" fill="currentColor">
+  <rect x="10" y="20" width="260" height="210" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".45"/>
+  <text x="20" y="38" font-family="IBM Plex Mono, monospace" font-size="10" opacity=".7">LADU · TELEFON</text>
+  <rect x="320" y="20" width="520" height="210" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".45"/>
+  <text x="330" y="38" font-family="IBM Plex Mono, monospace" font-size="10" opacity=".7">TASUTA TEENUSED (ei ole meie server)</text>
+  <rect x="320" y="270" width="520" height="110" fill="none" stroke="#e0b000" stroke-dasharray="4 3"/>
+  <text x="330" y="288" font-family="IBM Plex Mono, monospace" font-size="10" fill="#e0b000">TREENINGUAHEL (käsitsi, ~kord nädalas)</text>
+
+  <!-- phone -->
+  <rect x="30" y="60" width="220" height="150" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="140" y="84" text-anchor="middle" font-weight="600">Brauser (PWA)</text>
+  <rect x="45" y="98" width="190" height="30" rx="2" fill="#e0b000" opacity=".9"/>
+  <text x="140" y="117" text-anchor="middle" fill="#1b1e21" font-weight="600">YOLO11n · ONNX Runtime Web</text>
+  <text x="140" y="150" text-anchor="middle" opacity=".8">kaamera → mudel (WebGPU) → ringid</text>
+  <text x="140" y="168" text-anchor="middle" opacity=".8">parandus puutega → kinnitus</text>
+  <text x="140" y="196" text-anchor="middle" opacity=".6">offline-järjekord saatmata fotodele</text>
+
+  <!-- github pages -->
+  <rect x="350" y="60" width="200" height="70" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="450" y="84" text-anchor="middle" font-weight="600">GitHub Pages</text>
+  <text x="450" y="101" text-anchor="middle" opacity=".7">staatiline leht + mudel.onnx</text>
+  <text x="450" y="117" text-anchor="middle" opacity=".7">HTTPS kaasas, 0 €</text>
+
+  <!-- supabase -->
+  <rect x="590" y="60" width="230" height="150" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="705" y="84" text-anchor="middle" font-weight="600">Supabase (tasuta plaan)</text>
+  <text x="705" y="106" text-anchor="middle" opacity=".8">PostgreSQL · loendused, otsad</text>
+  <text x="705" y="124" text-anchor="middle" opacity=".8">Storage 1 GB · fotod</text>
+  <text x="705" y="142" text-anchor="middle" opacity=".8">Auth · PIN-sisselogimine</text>
+  <text x="705" y="170" text-anchor="middle" opacity=".6">RLS: töötaja näeb ainult oma</text>
+  <text x="705" y="186" text-anchor="middle" opacity=".6">pausib 7 päeva mittekasutusel</text>
+
+  <!-- arrows -->
+  <line x1="348" y1="80" x2="252" y2="80" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="300" y="72" text-anchor="middle" font-size="11">leht + mudel</text>
+  <line x1="250" y1="140" x2="588" y2="140" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="470" y="132" text-anchor="middle" font-size="11">foto + kinnitatud arv + otsad (JSON)</text>
+
+  <!-- training -->
+  <rect x="350" y="310" width="200" height="56" rx="3" fill="none" stroke="#e0b000" stroke-width="1.5"/>
+  <text x="450" y="334" text-anchor="middle" font-weight="600">Google Colab</text>
+  <text x="450" y="351" text-anchor="middle" opacity=".7">yolo train · eksport ONNX</text>
+  <path d="M705,210 L705,338 L552,338" fill="none" stroke="#e0b000" stroke-width="1.5" marker-end="url(#arrY)"/>
+  <text x="640" y="330" text-anchor="middle" font-size="11" fill="#e0b000">kinnitatud fotod</text>
+  <path d="M380,310 L380,132" fill="none" stroke="#e0b000" stroke-width="1.5" marker-end="url(#arrY)" stroke-dasharray="5 3"/>
+  <text x="372" y="250" text-anchor="end" font-size="11" fill="#e0b000">uus mudel.onnx (git push)</text>
+</g>
+</svg>
+</div>
+<figcaption>Mudel jookseb telefonis. Ainus "server" on Supabase'i andmebaas, kuhu läheb foto ja kinnitatud loendus; GitHub Pages serveerib lehte ja mudelifaili. Kollane on treeninguahel: kinnitatud fotod Supabase'ist Colabisse, uus mudel GitHubi.</figcaption>
+</figure>
+
+<h2>Komponendid</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Komponent</th><th>Tehnoloogia</th><th>Roll ja põhjendus</th></tr>
+<tr><td>Rakendus</td><td>React + Vite, PWA, TypeScript</td><td>Kaamera (<code>capture="environment"</code>), pildi mahutamine 1024 px ruutu, mudeli käivitus, ringide joonistus, puutega parandus, kinnitus. Service worker hoiab lehe ja mudeli vahemälus – teisel avamisel laeb kohe.</td></tr>
+<tr><td>Mudel</td><td>YOLO11n ONNX, 1024 px, ~11 MB</td><td>Jookseb ONNX Runtime Web'iga, WebGPU eelistatult, WASM varuks. Treenitud ühe klassiga <code>bar_end</code>. Suuremad mudelid (YOLO11s, RF-DETR) on telefoni jaoks liiga rasked – jäävad välja.</td></tr>
+<tr><td>Majutus</td><td>GitHub Pages</td><td>Staatiline leht, mudelifail, HTTPS kaasas. Uus mudeliversioon = uus fail repos, telefonid saavad selle automaatselt. <code>coi-serviceworker</code> lubab WASM-il mitut lõime.</td></tr>
+<tr><td>Andmebaas</td><td>Supabase Postgres</td><td>Loendused, iga ots koordinaatidega ja staatusega (ennustatud / kinnitatud / eemaldatud / lisatud), mudeli versioon. Row Level Security: iga töötaja kirjutab ainult oma ridu.</td></tr>
+<tr><td>Fotohoidla</td><td>Supabase Storage, 1 GB</td><td>Fotod ~1 MB (JPEG, 2048 px pikem külg) → ~1000 loendust. Piloodiks piisab; hiljem vanad fotod arhiveerida või plaan uuendada.</td></tr>
+<tr><td>Sisselogimine</td><td>Supabase Auth</td><td>Lihtne: üks konto töötaja kohta, PIN või link e-postile. Vajalik, et andmebaasi ei saaks kirjutada igaüks, kes lehe avab.</td></tr>
+<tr><td>Treening</td><td>Google Colab tasuta</td><td>Skript loeb Supabase'ist kinnitatud fotod ja otsad, treenib, ekspordib ONNX-i, mõõdab kuldsel testil, tulemus pushitakse GitHubi.</td></tr>
+</table>
+</div>
+
+<h2>Ühe loenduse teekond</h2>
+<figure>
+<div class="figbox">
+<svg viewBox="0 0 860 300" role="img" aria-label="Järjestus: töötaja pildistab, brauser jooksutab mudeli kohapeal ja näitab ringe, töötaja parandab ja kinnitab, brauser salvestab foto Storage'i ja loenduse Postgresi.">
+<defs><marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+<g font-family="IBM Plex Sans, sans-serif" font-size="12" fill="currentColor">
+  <g font-weight="600" text-anchor="middle">
+    <text x="100" y="30">Töötaja</text><text x="360" y="30">Brauser + mudel</text><text x="620" y="30">Supabase Storage</text><text x="790" y="30">Supabase DB</text>
+  </g>
+  <g stroke="currentColor" stroke-width="1" opacity=".35">
+    <line x1="100" y1="40" x2="100" y2="280"/><line x1="360" y1="40" x2="360" y2="280"/><line x1="620" y1="40" x2="620" y2="280"/><line x1="790" y1="40" x2="790" y2="280"/>
+  </g>
+  <g stroke="currentColor" stroke-width="1.5" marker-end="url(#arr2)">
+    <line x1="100" y1="70" x2="358" y2="70"/>
+    <line x1="360" y1="150" x2="102" y2="150"/>
+    <line x1="100" y1="200" x2="358" y2="200"/>
+    <line x1="360" y1="235" x2="618" y2="235"/>
+    <line x1="360" y1="265" x2="788" y2="265"/>
+  </g>
+  <g font-size="11">
+    <text x="230" y="63" text-anchor="middle">1 · pildistab kimbu otsa</text>
+    <rect x="290" y="85" width="140" height="44" rx="3" fill="#e0b000" opacity=".9"/>
+    <text x="360" y="103" text-anchor="middle" fill="#1b1e21" font-weight="600">2 · YOLO telefonis</text>
+    <text x="360" y="119" text-anchor="middle" fill="#1b1e21">0,7–0,9 s · WebGPU</text>
+    <text x="230" y="143" text-anchor="middle">3 · arv + ringid pildil</text>
+    <text x="100" y="175" text-anchor="middle" opacity=".8">4 · lisab 2, eemaldab 1</text>
+    <text x="230" y="193" text-anchor="middle">5 · kinnitab: 68</text>
+    <text x="490" y="228" text-anchor="middle">6 · foto (JPEG, ~1 MB)</text>
+    <text x="575" y="258" text-anchor="middle">7 · loendus + otsad + mudeli versioon + kasutaja</text>
+  </g>
+</g>
+</svg>
+</div>
+<figcaption>Sammud 1–3 ei vaja võrku üldse. Kui võrku pole, jäävad sammud 6–7 telefoni järjekorda ja saadetakse hiljem.</figcaption>
+</figure>
+
+<h2>Andmemudel</h2>
+<pre>bundle        id, code (kimbu tähis), material, nominal_diameter_mm, created_at
+count         id, bundle_id, user_id, photo_path (Storage), model_version,
+              predicted_count, final_count, device, latency_ms, created_at
+detection     id, count_id, x, y, w, h, confidence,
+              status: predicted | confirmed | removed | added_by_user
+model_version tag (v0.3), trained_on, map50, test_mae, published_at</pre>
+<p>Iga <code>detection</code> staatusega <code>confirmed</code> või <code>added_by_user</code> on treeningmärgend, <code>removed</code> on negatiivne näide. Treeningskript ekspordib need otse YOLO tekstiformaati.</p>
+
+<h2>Mida see variant tähendab</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Hea</th><th>Halb</th></tr>
+<tr><td>0 € kuus, ükski osa ei sõltu tasuta serveri jätkumisest</td><td>Mudel on piiratud kergete detektoritega (YOLO-n klass); RF-DETR jääb välja</td></tr>
+<tr><td>Töötab kehva võrguga laos – loendamine ei vaja võrku</td><td>YOLO AGPL: kasutuselevõtuks avalikustada rakenduse kood või hiljem vahetada D-FINE-N (Apache) vastu</td></tr>
+<tr><td>Kogu kood on TypeScript – meeskonna tugev ala</td><td>Vead juhtuvad telefonis, mitte serveris – vigade logimine Supabase'i tuleb ise ehitada</td></tr>
+<tr><td>Uus mudel = üks fail GitHubis, telefonid uuenevad ise</td><td>Supabase pausib 7 päeva mittekasutusel – vajab äratamist dashboardist (või kord nädalas tühja päringut GitHub Actionsist)</td></tr>
+<tr><td>Skaleerub tasuta: iga telefon toob oma arvutusvõimsuse</td><td>Storage 1 GB täitub ~1000 fotoga – arhiveerimine või plaan</td></tr>
+</table>
+</div>
+
+<h2>Lahtised küsimused</h2>
+<ul>
+<li>Kas kimbul on juba tähis (saateleht, triipkood), millega loendus siduda – või sisestab töötaja selle käsitsi?</li>
+<li>Kas loetakse ainult ümarvardaid või ka nelikant- ja lattmaterjali? Iga otsakuju on eraldi klass ja vajab omi fotosid.</li>
+<li>Kas rakenduse lähtekoodi avalikustamine (AGPL) on ettevõttele vastuvõetav? Kui mitte, planeerida D-FINE-N test.</li>
+<li>Kuhu loendus lõpuks jõuab – laoprogrammi (ERP) liidestus või piisab CSV-ekspordist Supabase'ist?</li>
+</ul>
+</div>
+
+</body>
+</html>

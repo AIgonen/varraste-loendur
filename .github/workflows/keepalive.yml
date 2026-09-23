@@ -1,0 +1,17 @@
+# Hoiab Supabase'i tasuta projekti ärkvel (pausib 7 päeva mittekasutusel).
+# Repo Settings → Secrets → SUPABASE_URL ja SUPABASE_ANON_KEY.
+name: supabase-keepalive
+on:
+  schedule:
+    - cron: "0 6 * * 1,4"   # esmaspäev ja neljapäev 06:00 UTC
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sf "$SUPABASE_URL/rest/v1/model_version?select=tag&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
