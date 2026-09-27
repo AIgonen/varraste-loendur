@@ -1,0 +1,1 @@
+revoke select on training_export from anon, authenticated;
