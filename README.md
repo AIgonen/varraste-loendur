@@ -2,7 +2,7 @@
 
 Rakendus, mis loeb foto järgi kokku kimpu pakitud metallvardad. Mudel jookseb telefoni brauseris, andmed Supabase'is, leht GitHub Pagesil. Kõik tasuta.
 
-**Seis (uuenda igal reedel):** nädal 1 – alustatud 2026-09-23.
+**Seis (uuenda igal reedel):** nädal 2 (04.10.2026) – seadistus valmis: repo, Pages, Supabase (skeem + kasutajad), Roboflow projekt, arenduskeskkonnad. Järgmine: fotod ja märgistus (A), esimene treening (B), salvestus Supabase'i (C).
 
 ## Kaustad
 | Kaust | Mis | Kelle |
@@ -12,6 +12,9 @@ Rakendus, mis loeb foto järgi kokku kimpu pakitud metallvardad. Mudel jookseb t
 | `notebooks/` | Colab: treening → loendusviga → ONNX | B |
 | `supabase/` | skeem, RLS, RPC; iga muudatus uue `NNN_*.sql` failina | C |
 | `docs/` | arhitektuur, arendusplaan, otsused, pildistamisjuhend, kokkuvõte | kõik |
+| `docs/arendaja-juhend.md` | **alusta siit:** äpi käivitamine, pull, push | kõik |
+| `docs/roboflow-juhend.md` | fotode märgistamine ja eksport | A |
+| `Testdata/` | proovikomplekt notebooki katsetamiseks (mitte päris treeninguks) | B |
 | `scripts/` | `loo_issued.sh` – sildid + 1. nädala issue'd | – |
 
 ## Esimene kord (C, ~30 min)
