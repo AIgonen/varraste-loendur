@@ -27,3 +27,16 @@ canvas[hidden] { display: none }
 .zoombtns { position: absolute; right: 8px; top: 8px; display: grid; gap: 6px }
 .zoombtns button { width: 44px; height: 44px; font-size: 22px; border: 0; border-radius: 6px; background: rgba(255,255,255,.9); color: var(--ink) }
 .zoombtns button:disabled { opacity: .4 }
+.code { display: block; width: 100%; font-size: 17px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; margin: 8px 0; text-transform: uppercase; background: var(--surface) }
+.code::placeholder { text-transform: none }
+.top .link { white-space: nowrap }
+.hist { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--surface); border-radius: 6px; overflow: hidden }
+.hist th, .hist td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left }
+.hist th { font-size: 12px; color: var(--ink2); font-weight: 600 }
+.hist .num { text-align: right; font-variant-numeric: tabular-nums }
+.hist tbody tr { cursor: pointer }
+.hist tr.sel td { background: #fbf4dc }
+.hist tr.photo td { cursor: default; background: var(--surface) }
+.hist img { width: 100%; border-radius: 6px; display: block }
+.muted { color: var(--ink2) }
+.small { font-size: 12px; margin-top: 4px }

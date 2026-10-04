@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { loadModel, detect, toOriginal, type Box } from './lib/yolo'
-import { supabase, activeModel, saveCount, installErrorLog, reportError, type Det } from './lib/supabase'
+import { supabase, activeModel, saveCount, bundleId, installErrorLog, reportError, type Det } from './lib/supabase'
 import Login from './Login'
 import Review from './Review'
+import History from './History'
 
-const APP_VERSION = '0.3.1'
+const APP_VERSION = '0.4.0'
 installErrorLog(APP_VERSION)
 
 type Model = { tag: string; file: string; conf: number }
@@ -24,14 +25,34 @@ export default function App() {
 
   if (!checked) return null
   if (!session) return <Login />
-  return <Counter email={session.user.email ?? ''} />
+  return <Main email={session.user.email ?? ''} />
 }
 
-function Counter({ email }: { email: string }) {
+function Main({ email }: { email: string }) {
+  const [view, setView] = useState<'count' | 'history'>('count')
+  return (
+    <div className="wrap">
+      <div className="top">
+        <h1>Varraste Loendur</h1>
+        <button className="link" onClick={() => setView(view === 'count' ? 'history' : 'count')}>
+          {view === 'count' ? 'Ajalugu' : '← Loendama'}
+        </button>
+        <button className="link" onClick={() => supabase.auth.signOut()}>Logi välja</button>
+      </div>
+      <div className="who">{email}</div>
+      {/* Loendaja jääb alles ka ajaloo ajal (peidetult) – mudelit ei pea uuesti laadima */}
+      <div hidden={view !== 'count'}><Counter /></div>
+      {view === 'history' && <History />}
+    </div>
+  )
+}
+
+function Counter() {
   const [status, setStatus] = useState('Vajuta "Laadi mudel"')
   const [model, setModel] = useState<Model | null>(null)
   const [shot, setShot] = useState<Shot | null>(null)          // praegu ülevaatusel olev foto
   const [last, setLast] = useState<number | null>(null)        // viimati kinnitatud arv
+  const [code, setCode] = useState('')                          // kimbu kood saatelehelt (valikuline)
   const work = useRef<HTMLCanvasElement>(null)                 // nähtamatu canvas mudeli sisendiks
 
   useEffect(() => { document.title = shot ? 'Kinnita · Varraste Loendur' : 'Varraste Loendur' }, [shot])
@@ -62,14 +83,16 @@ function Counter({ email }: { email: string }) {
     const boxes = await detect(img, work.current!, model.conf)
     const ms = Math.round(performance.now() - t0)
     const key = Date.now()
-    setShot({ key, img, boxes, countId: null, saveFailed: false })
+    const bundleCode = code.trim().toUpperCase()
+    setShot({ key, img, boxes, countId: null, saveFailed: false, code: bundleCode })
     setStatus(`${ms} ms`)
 
     // Salvestus taustal, samal ajal kui töötaja parandab. Kinnita-nupp ootab count.id-d.
     try {
       const photo = await toJpeg(img, 2048)
       const predicted: Det[] = boxes.map(b => ({ ...clamp(toOriginal(b, img.width, img.height)), confidence: round(b.s), status: 'predicted' }))
-      const countId = await saveCount({ photo: photo.blob, width: photo.w, height: photo.h, modelTag: model.tag, conf: model.conf, predicted, latencyMs: ms })
+      const bid = await bundleId(bundleCode)
+      const countId = await saveCount({ photo: photo.blob, width: photo.w, height: photo.h, modelTag: model.tag, conf: model.conf, predicted, latencyMs: ms, bundleId: bid ?? undefined })
       setShot(s => s && s.key === key ? { ...s, countId } : s)
     } catch (err) {
       console.error(err)
@@ -78,17 +101,14 @@ function Counter({ email }: { email: string }) {
     }
   }
 
-  function onConfirmed(n: number) { setShot(null); setLast(n); setStatus('Pildista järgmine kimp.') }
+  function onConfirmed(n: number) { setShot(null); setLast(n); setCode(''); setStatus('Pildista järgmine kimp.') }
 
   return (
-    <div className="wrap">
-      <div className="top">
-        <h1>Varraste Loendur</h1>
-        <button className="link" onClick={() => supabase.auth.signOut()}>Logi välja</button>
-      </div>
-      <div className="who">{email}</div>
+    <>
       {!shot && <>
         <button className="btn" onClick={onLoad} disabled={!!model}>1 · Laadi mudel</button>
+        <input className="code" placeholder="Kimbu kood (valikuline)" value={code} autoCapitalize="characters"
+               autoComplete="off" spellCheck={false} onChange={e => setCode(e.target.value.toUpperCase())} />
         <label className="btn sec" style={{ textAlign: 'center', opacity: model ? 1 : .5 }}>2 · Pildista
           <input type="file" accept="image/*" capture="environment" hidden disabled={!model} onChange={onPhoto} />
         </label>
@@ -96,16 +116,17 @@ function Counter({ email }: { email: string }) {
       </>}
       <div className="status">{status}</div>
       {shot && <>
+        {shot.code && <div className="status center">Kimp: <b>{shot.code}</b></div>}
         <Review key={shot.key} img={shot.img} boxes={shot.boxes} countId={shot.countId} saveFailed={shot.saveFailed} onDone={onConfirmed} />
         {shot.saveFailed && <div className="error">Foto salvestamine ebaõnnestus: {shot.saveError}</div>}
         <button className="link" onClick={() => setShot(null)}>Tühista ja pildista uuesti</button>
       </>}
       <canvas ref={work} width={1024} height={1024} hidden />
-    </div>
+    </>
   )
 }
 
-type Shot = { key: number; img: ImageBitmap; boxes: Box[]; countId: string | null; saveFailed: boolean; saveError?: string }
+type Shot = { key: number; img: ImageBitmap; boxes: Box[]; countId: string | null; saveFailed: boolean; saveError?: string; code: string }
 
 /** Foto JPEG-iks, pikem külg max `max` px (~1 MB) – Storage'i tasuta 1 GB jaoks. */
 async function toJpeg(img: ImageBitmap, max: number) {
