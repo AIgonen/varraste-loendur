@@ -8,3 +8,13 @@ h1 { font-size: 22px; border-top: 5px solid var(--accent); padding-top: 12px; ma
 .btn:disabled { opacity: .5 }
 canvas { width: 100%; height: auto; display: block; border-radius: 6px; background: #000 }
 .status { font-size: 14px; color: var(--ink2); min-height: 20px }
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px }
+.top h1 { flex: 1 }
+.link { background: none; border: 0; color: var(--ink2); text-decoration: underline; font-size: 14px; cursor: pointer }
+.who { font-size: 13px; color: var(--ink2); margin: -6px 0 8px }
+.count { font-size: 40px; font-weight: 700; text-align: center }
+.ok { color: #2f8a57 }
+.error { color: #b8531f; font-size: 14px; margin: 6px 0 }
+.login { display: grid; gap: 12px }
+.login label { display: grid; gap: 4px; font-size: 14px; color: var(--ink2) }
+.login input { font-size: 17px; padding: 12px; border: 1px solid var(--line); border-radius: 6px }

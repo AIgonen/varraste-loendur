@@ -1,8 +1,9 @@
 // Varraste Loendur · Supabase kliendi näited (arendaja C)
-// npm i @supabase/supabase-js
 import { createClient } from '@supabase/supabase-js'
 
-export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+const url = import.meta.env.VITE_SUPABASE_URL, key = import.meta.env.VITE_SUPABASE_ANON_KEY
+if (!url || !key) throw new Error('VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY puudub – loo app/.env (vt .env.example)')
+export const supabase = createClient(url, key)
 
 export type Det = { cx: number; cy: number; w: number; h: number; confidence: number | null;
                     status: 'predicted' | 'confirmed' | 'removed' | 'added_by_user' }
@@ -31,8 +32,10 @@ export async function saveCount(p: {
     device: navigator.userAgent.slice(0, 120), latency_ms: p.latencyMs ?? null,
   })
   if (ins.error) throw ins.error
-  const det = await supabase.from('detection').insert(p.predicted.map(d => ({ count_id: id, ...d, status: 'predicted' })))
-  if (det.error) throw det.error
+  if (p.predicted.length) {                       // 0 leiu korral pole midagi lisada
+    const det = await supabase.from('detection').insert(p.predicted.map(d => ({ count_id: id, ...d, status: 'predicted' })))
+    if (det.error) throw det.error
+  }
   return id
 }
 
