@@ -3,8 +3,9 @@ import type { Session } from '@supabase/supabase-js'
 import { loadModel, detect, toOriginal, type Box } from './lib/yolo'
 import { supabase, activeModel, saveCount, installErrorLog, type Det } from './lib/supabase'
 import Login from './Login'
+import Review from './Review'
 
-const APP_VERSION = '0.2.0'
+const APP_VERSION = '0.3.0'
 installErrorLog(APP_VERSION)
 
 type Model = { tag: string; file: string; conf: number }
@@ -29,11 +30,11 @@ export default function App() {
 function Counter({ email }: { email: string }) {
   const [status, setStatus] = useState('Vajuta "Laadi mudel"')
   const [model, setModel] = useState<Model | null>(null)
-  const [count, setCount] = useState<number | null>(null)
-  const [saved, setSaved] = useState<'idle' | 'saving' | 'ok' | 'error'>('idle')
-  const canvas = useRef<HTMLCanvasElement>(null)
+  const [shot, setShot] = useState<Shot | null>(null)          // praegu ülevaatusel olev foto
+  const [last, setLast] = useState<number | null>(null)        // viimati kinnitatud arv
+  const work = useRef<HTMLCanvasElement>(null)                 // nähtamatu canvas mudeli sisendiks
 
-  useEffect(() => { document.title = count == null ? 'Varraste Loendur' : `${count} · Varraste Loendur` }, [count])
+  useEffect(() => { document.title = shot ? 'Kinnita · Varraste Loendur' : 'Varraste Loendur' }, [shot])
 
   async function onLoad() {
     setStatus('Laen mudelit…')
@@ -56,26 +57,27 @@ function Counter({ email }: { email: string }) {
     const f = e.target.files?.[0]; if (!f || !model) return
     e.target.value = ''                          // sama faili saab uuesti valida
     const img = await createImageBitmap(f)
-    setStatus('Loendan…'); setSaved('idle')
+    setStatus('Loendan…'); setLast(null)
     const t0 = performance.now()
-    const boxes = await detect(img, canvas.current!, model.conf)
+    const boxes = await detect(img, work.current!, model.conf)
     const ms = Math.round(performance.now() - t0)
-    draw(canvas.current!, boxes)
-    setCount(boxes.length)
-    setStatus(`${boxes.length} otsa, ${ms} ms`)
+    const key = Date.now()
+    setShot({ key, img, boxes, countId: null, saveFailed: false })
+    setStatus(`${ms} ms`)
 
-    // Salvestus: foto (vähendatud) + loendus + iga ots originaalfoto koordinaatides
-    setSaved('saving')
+    // Salvestus taustal, samal ajal kui töötaja parandab. Kinnita-nupp ootab count.id-d.
     try {
       const photo = await toJpeg(img, 2048)
       const predicted: Det[] = boxes.map(b => ({ ...clamp(toOriginal(b, img.width, img.height)), confidence: round(b.s), status: 'predicted' }))
-      await saveCount({ photo: photo.blob, width: photo.w, height: photo.h, modelTag: model.tag, conf: model.conf, predicted, latencyMs: ms })
-      setSaved('ok')
+      const countId = await saveCount({ photo: photo.blob, width: photo.w, height: photo.h, modelTag: model.tag, conf: model.conf, predicted, latencyMs: ms })
+      setShot(s => s && s.key === key ? { ...s, countId } : s)
     } catch (err) {
       console.error(err)
-      setSaved('error')
+      setShot(s => s && s.key === key ? { ...s, saveFailed: true } : s)
     }
   }
+
+  function onConfirmed(n: number) { setShot(null); setLast(n); setStatus('Pildista järgmine kimp.') }
 
   return (
     <div className="wrap">
@@ -84,25 +86,25 @@ function Counter({ email }: { email: string }) {
         <button className="link" onClick={() => supabase.auth.signOut()}>Logi välja</button>
       </div>
       <div className="who">{email}</div>
-      <button className="btn" onClick={onLoad} disabled={!!model}>1 · Laadi mudel</button>
-      <label className="btn sec" style={{ textAlign: 'center', opacity: model ? 1 : .5 }}>2 · Pildista
-        <input type="file" accept="image/*" capture="environment" hidden disabled={!model} onChange={onPhoto} />
-      </label>
-      {count != null && <div className="count">{count}</div>}
+      {!shot && <>
+        <button className="btn" onClick={onLoad} disabled={!!model}>1 · Laadi mudel</button>
+        <label className="btn sec" style={{ textAlign: 'center', opacity: model ? 1 : .5 }}>2 · Pildista
+          <input type="file" accept="image/*" capture="environment" hidden disabled={!model} onChange={onPhoto} />
+        </label>
+        {last != null && <div className="status ok center">✓ Kinnitatud: {last}</div>}
+      </>}
       <div className="status">{status}</div>
-      {saved === 'saving' && <div className="status">Salvestan…</div>}
-      {saved === 'ok' && <div className="status ok">✓ Salvestatud</div>}
-      {saved === 'error' && <div className="error">Salvestamine ebaõnnestus – kontrolli võrku ja proovi uuesti.</div>}
-      <canvas ref={canvas} width={1024} height={1024} />
+      {shot && <>
+        <Review key={shot.key} img={shot.img} boxes={shot.boxes} countId={shot.countId} saveFailed={shot.saveFailed} onDone={onConfirmed} />
+        {shot.saveFailed && <div className="error">Foto salvestamine ebaõnnestus – kontrolli võrku ja pildista uuesti.</div>}
+        <button className="link" onClick={() => setShot(null)}>Tühista ja pildista uuesti</button>
+      </>}
+      <canvas ref={work} width={1024} height={1024} hidden />
     </div>
   )
 }
 
-function draw(c: HTMLCanvasElement, boxes: Box[]) {
-  const ctx = c.getContext('2d')!
-  ctx.lineWidth = 3; ctx.strokeStyle = '#e0b000'
-  for (const b of boxes) { ctx.beginPath(); ctx.arc((b.x1 + b.x2) / 2, (b.y1 + b.y2) / 2, Math.max(b.x2 - b.x1, b.y2 - b.y1) / 2, 0, Math.PI * 2); ctx.stroke() }
-}
+type Shot = { key: number; img: ImageBitmap; boxes: Box[]; countId: string | null; saveFailed: boolean }
 
 /** Foto JPEG-iks, pikem külg max `max` px (~1 MB) – Storage'i tasuta 1 GB jaoks. */
 async function toJpeg(img: ImageBitmap, max: number) {

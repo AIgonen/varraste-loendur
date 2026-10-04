@@ -18,3 +18,7 @@ canvas { width: 100%; height: auto; display: block; border-radius: 6px; backgrou
 .login { display: grid; gap: 12px }
 .login label { display: grid; gap: 4px; font-size: 14px; color: var(--ink2) }
 .login input { font-size: 17px; padding: 12px; border: 1px solid var(--line); border-radius: 6px }
+.center { text-align: center }
+.hint { font-size: 13px; color: var(--ink2); margin: 6px 0 }
+canvas.tap { touch-action: manipulation; cursor: crosshair }
+canvas[hidden] { display: none }
