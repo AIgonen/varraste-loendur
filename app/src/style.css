@@ -22,3 +22,8 @@ canvas { width: 100%; height: auto; display: block; border-radius: 6px; backgrou
 .hint { font-size: 13px; color: var(--ink2); margin: 6px 0 }
 canvas.tap { touch-action: manipulation; cursor: crosshair }
 canvas[hidden] { display: none }
+.zoombox { position: relative; overflow: hidden; touch-action: none; border-radius: 6px; background: #000; aspect-ratio: 1 }
+.zoombox canvas { border-radius: 0; will-change: transform }
+.zoombtns { position: absolute; right: 8px; top: 8px; display: grid; gap: 6px }
+.zoombtns button { width: 44px; height: 44px; font-size: 22px; border: 0; border-radius: 6px; background: rgba(255,255,255,.9); color: var(--ink) }
+.zoombtns button:disabled { opacity: .4 }

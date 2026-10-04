@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { SIZE, toOriginal, type Box } from './lib/yolo'
 import { confirmCount, type Det } from './lib/supabase'
+import { usePinchZoom } from './lib/zoom'
 
 // Kinnitusvaade: töötaja parandab mudeli tulemuse ja kinnitab lõpliku arvu.
 //  - puuduta ringi  → eemalda (punane rist); uuesti puudutades taastub
 //  - puuduta tühja kohta → lisa uus ots (sinine ring)
+//  - kaks sõrme → suurenda; suurendatult üks sõrm lohistab
 //  - "Kinnita" → confirm_count: lõplik arv + iga ots lõpliku staatusega (treeninguandmed)
 
 type Item = { b: Box; kind: 'model' | 'added'; removed: boolean }
@@ -21,11 +23,13 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
   const added = items.filter(i => i.kind === 'added').length
 
   useEffect(() => { draw(canvas.current!, img, items) }, [img, items])
+  const zoom = usePinchZoom(onTap)
 
-  function onTap(e: React.PointerEvent<HTMLCanvasElement>) {
+  function onTap(clientX: number, clientY: number) {
+    // getBoundingClientRect arvestab ka suurendust, seega koordinaadid on alati õiged
     const c = canvas.current!, rect = c.getBoundingClientRect()
     const scale = SIZE / rect.width
-    const x = (e.clientX - rect.left) * scale, y = (e.clientY - rect.top) * scale
+    const x = (clientX - rect.left) * scale, y = (clientY - rect.top) * scale
     const minHit = 14 * scale                       // vähemalt ~14 px sõrme all, ka väikeste otste puhul
     // lähim ring, mille sisse puudutus jääb
     let hit = -1, best = Infinity
@@ -70,8 +74,15 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
       <div className="status center">
         Mudel leidis {boxes.length}{removed ? ` · eemaldatud ${removed}` : ''}{added ? ` · lisatud ${added}` : ''}
       </div>
-      <canvas ref={canvas} width={SIZE} height={SIZE} onPointerUp={onTap} className="tap" />
-      <div className="hint">Puuduta ringi, et see eemaldada. Puuduta tühja otsa kohta, et lisada.</div>
+      <div className="zoombox" ref={zoom.box} {...zoom.handlers}>
+        <canvas ref={canvas} width={SIZE} height={SIZE} className="tap" style={zoom.style} />
+        <div className="zoombtns" onPointerDown={e => e.stopPropagation()}>
+          <button onClick={zoom.zoomIn} aria-label="Suurenda">+</button>
+          <button onClick={zoom.zoomOut} aria-label="Vähenda" disabled={zoom.view.s <= 1}>−</button>
+          {zoom.view.s > 1 && <button onClick={zoom.reset} aria-label="Kogu pilt">⤢</button>}
+        </div>
+      </div>
+      <div className="hint">Puuduta ringi, et see eemaldada. Puuduta tühja otsa kohta, et lisada. Kahe sõrmega saab suurendada.</div>
       <button className="btn" onClick={onConfirm} disabled={busy || !countId}>
         {busy ? 'Kinnitan…' : countId ? `Kinnita ${final}` : saveFailed ? 'Foto salvestamine ebaõnnestus' : 'Salvestan fotot…'}
       </button>
