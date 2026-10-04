@@ -45,6 +45,14 @@ export async function confirmCount(countId: string, finalCount: number, detectio
   if (error) throw error
 }
 
+/** Püütud viga → error_log + loetav tekst kasutajale (nt "kinnitamine: permission denied for table detection"). */
+export function reportError(where: string, err: unknown): string {
+  const e = err as { message?: string; details?: string; hint?: string; code?: string; stack?: string }
+  const msg = [e?.message ?? String(err), e?.details, e?.hint, e?.code && `kood ${e.code}`].filter(Boolean).join(' · ')
+  supabase.from('error_log').insert({ message: `${where}: ${msg}`, stack: e?.stack ?? null, device: navigator.userAgent.slice(0, 120) }).then(() => {})
+  return msg
+}
+
 /** Vead telefonist andmebaasi (window.onerror + unhandledrejection). */
 export function installErrorLog(appVersion: string) {
   const send = (message: string, stack?: string) =>

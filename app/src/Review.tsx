@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { SIZE, toOriginal, type Box } from './lib/yolo'
-import { confirmCount, type Det } from './lib/supabase'
+import { confirmCount, reportError, type Det } from './lib/supabase'
 import { usePinchZoom } from './lib/zoom'
 
 // Kinnitusvaade: töötaja parandab mudeli tulemuse ja kinnitab lõpliku arvu.
@@ -64,7 +64,7 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
       onDone(final)
     } catch (err) {
       console.error(err)
-      setError('Kinnitamine ebaõnnestus – kontrolli võrku ja proovi uuesti.')
+      setError(`Kinnitamine ebaõnnestus: ${reportError('kinnitamine', err)}`)
     } finally { setBusy(false) }
   }
 

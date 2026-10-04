@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { loadModel, detect, toOriginal, type Box } from './lib/yolo'
-import { supabase, activeModel, saveCount, installErrorLog, type Det } from './lib/supabase'
+import { supabase, activeModel, saveCount, installErrorLog, reportError, type Det } from './lib/supabase'
 import Login from './Login'
 import Review from './Review'
 
-const APP_VERSION = '0.3.0'
+const APP_VERSION = '0.3.1'
 installErrorLog(APP_VERSION)
 
 type Model = { tag: string; file: string; conf: number }
@@ -73,7 +73,8 @@ function Counter({ email }: { email: string }) {
       setShot(s => s && s.key === key ? { ...s, countId } : s)
     } catch (err) {
       console.error(err)
-      setShot(s => s && s.key === key ? { ...s, saveFailed: true } : s)
+      const msg = reportError('salvestamine', err)
+      setShot(s => s && s.key === key ? { ...s, saveFailed: true, saveError: msg } : s)
     }
   }
 
@@ -96,7 +97,7 @@ function Counter({ email }: { email: string }) {
       <div className="status">{status}</div>
       {shot && <>
         <Review key={shot.key} img={shot.img} boxes={shot.boxes} countId={shot.countId} saveFailed={shot.saveFailed} onDone={onConfirmed} />
-        {shot.saveFailed && <div className="error">Foto salvestamine ebaõnnestus – kontrolli võrku ja pildista uuesti.</div>}
+        {shot.saveFailed && <div className="error">Foto salvestamine ebaõnnestus: {shot.saveError}</div>}
         <button className="link" onClick={() => setShot(null)}>Tühista ja pildista uuesti</button>
       </>}
       <canvas ref={work} width={1024} height={1024} hidden />
@@ -104,7 +105,7 @@ function Counter({ email }: { email: string }) {
   )
 }
 
-type Shot = { key: number; img: ImageBitmap; boxes: Box[]; countId: string | null; saveFailed: boolean }
+type Shot = { key: number; img: ImageBitmap; boxes: Box[]; countId: string | null; saveFailed: boolean; saveError?: string }
 
 /** Foto JPEG-iks, pikem külg max `max` px (~1 MB) – Storage'i tasuta 1 GB jaoks. */
 async function toJpeg(img: ImageBitmap, max: number) {
