@@ -70,6 +70,17 @@ Jaotis **„Fotode kaupa“** näitab 6 halvimat fotot – vaadake koos, mis nei
 
 Pange kirja ka **CONF** väärtus, mille notebook valis (jaotis 5 lõpus) – seda läheb vaja sammus 2.
 
+### 1.7 Tulemuste salvestamine
+
+PDF-i **ei tee** – notebook salvestab kõik ise Drive'i kausta `varraste-loendur/runs/`.
+
+Pärast iga katset:
+1. **`katsed.csv`** – notebook lisas uue rea. See on katse ametlik tulemus.
+2. **Rida reposse:** kopeeri see rida faili `docs/katsed.md` tabelisse (commit + push). Nii näeb kogu meeskond ühest kohast, kuidas mudel paraneb.
+3. **Ekraanipilt** jaotisest „Fotode kaupa“ (6 halvimat fotot) → meeskonna chatti. Selle järgi otsustame, mida järgmisena pildistada.
+4. **Notebook koos väljunditega** (soovi korral): File → Save a copy in Drive.
+5. **Ära kustuta** `runs/` kaustast midagi. Iga uus katse saab uue `KATSE_NIMI` (nt `yolo11n_v02`).
+
 ---
 
 ## 2. Treenitud mudel äppi

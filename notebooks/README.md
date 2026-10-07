@@ -16,7 +16,18 @@
 2. Kontrolli, et zipis on `test/` kaust – see on kuldne test (30 fotot, käsitsi kontrollitud märgendid). Roboflow'is jaota Train/Valid/Test nii, et test on need 30.
 3. Jaotis 1: `KATSE_NIMI = "yolo11n_v01"`, `EPOHHE = 100`, `IMGSZ = 1024`. Run all. ~20–40 min.
 4. Tulemus jaotises 5: keskmine viga vardaid, täpselt õigete osakaal, ±2 osakaal, ja `conf` väärtus, mis läheb rakendusse.
-5. ONNX-fail Drive'is `runs/<KATSE_NIMI>.onnx` → repo `public/model.onnx` → git push. Telefonid saavad uue mudeli ise.
+5. ONNX-fail Drive'is `runs/<KATSE_NIMI>.onnx` → äppi **oma nimega** (mitte `model.onnx` üle) ja aktiivseks andmebaasis – vt `docs/jargmised-sammud.md` samm 2.
+
+## Tulemuste salvestamine
+
+PDF-i **ei tee** – notebook salvestab kõik ise Drive'i kausta `varraste-loendur/runs/`.
+
+Pärast iga katset:
+1. **`katsed.csv`** – notebook lisas uue rea. See on katse ametlik tulemus.
+2. **Rida reposse:** kopeeri see rida faili `docs/katsed.md` tabelisse (commit + push). Nii näeb kogu meeskond ühest kohast, kuidas mudel paraneb.
+3. **Ekraanipilt** jaotisest „Fotode kaupa“ (6 halvimat fotot) → meeskonna chatti. Selle järgi otsustame, mida järgmisena pildistada.
+4. **Notebook koos väljunditega** (soovi korral): File → Save a copy in Drive.
+5. **Ära kustuta** `runs/` kaustast midagi. Iga uus katse saab uue `KATSE_NIMI` (nt `yolo11n_v02`).
 
 ## Järgmine katse
 Muuda `KATSE_NIMI` (nt `yolo11s_v01`) ja `MUDEL` (`yolo11s.pt`), Run all. Sama datasett, sama test – `katsed.csv` saab uue rea. Lõpetatud katset ei treeni notebook uuesti (Drive'is `VALMIS.txt`), katkenud katse jätkub automaatselt.
