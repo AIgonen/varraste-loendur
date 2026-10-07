@@ -47,11 +47,13 @@ Täpne juhend on `docs/roboflow-juhend.md`. Lühidalt:
 
 1. Ava colab.research.google.com → **File → Open notebook → GitHub** → kirjuta `AIgonen/varraste-loendur` → vali `notebooks/varraste_loendur_treening.ipynb`.
 2. **Runtime → Change runtime type → T4 GPU → Save**.
-3. Jaotis **1 · Seaded**: jäta nii nagu on (`KATSE_NIMI = yolo11n_v01`, `ANDMED_ALLIKAS = zip`).
+3. Jaotis **1 · Seaded**: `KATSE_NIMI = yolo11n_v02`, `EPOHHE = 100`, `ANDMED_ALLIKAS = zip`.
+   **Iga katse saab uue nime.** `yolo11n_v01` on juba proovijooksuga kasutatud – sama nimega katset notebook uuesti ei treeni (kaustas on `VALMIS.txt`), vaid võtaks vana proovimudeli.
 4. **Runtime → Run all**. Esimene lahter küsib Drive'i ligipääsu – luba.
-5. Treening kestab ~30–60 min. Kui Colab vahepeal katkestab: ava notebook uuesti ja **Run all** – jätkab viimasest salvestusest.
+   Lisaandmed: kui Drive'is on `universe-rebar.zip`, võetakse need 250 fotot automaatselt treeningusse (`KASUTA_LISA = True`). Väljund näitab rida `Lisaandmed: … → train`.
+5. Treening kestab ~30–60 min (lisaandmetega veidi kauem). Kui Colab vahepeal katkestab: ava notebook uuesti ja **Run all** – jätkab viimasest salvestusest.
 6. Valmis, kui Drive'is on:
-   - `varraste-loendur/runs/yolo11n_v01.onnx` – mudel äpi jaoks
+   - `varraste-loendur/runs/yolo11n_v02.onnx` – mudel äpi jaoks
    - `varraste-loendur/runs/katsed.csv` – tulemuste rida
 
 ### 1.6 Kas mudel on piisavalt hea?
@@ -79,7 +81,7 @@ Pärast iga katset:
 2. **Rida reposse:** kopeeri see rida faili `docs/katsed.md` tabelisse (commit + push). Nii näeb kogu meeskond ühest kohast, kuidas mudel paraneb.
 3. **Ekraanipilt** jaotisest „Fotode kaupa“ (6 halvimat fotot) → meeskonna chatti. Selle järgi otsustame, mida järgmisena pildistada.
 4. **Notebook koos väljunditega** (soovi korral): File → Save a copy in Drive.
-5. **Ära kustuta** `runs/` kaustast midagi. Iga uus katse saab uue `KATSE_NIMI` (nt `yolo11n_v02`).
+5. **Ära kustuta** `runs/` kaustast midagi. Iga uus katse saab uue `KATSE_NIMI` (nt `yolo11n_v03`).
 
 ---
 
@@ -89,11 +91,11 @@ Põhimõte: mudelifail läheb reposse **oma nimega** (mitte `model.onnx` üle), 
 
 ### 2.1 Fail reposse
 
-1. Laadi Drive'ist alla `runs/yolo11n_v01.onnx` (~11 MB).
-2. GitHub Desktopis: tee haru `mudel/yolo11n_v01`.
+1. Laadi Drive'ist alla `runs/yolo11n_v02.onnx` (~11 MB).
+2. GitHub Desktopis: tee haru `mudel/yolo11n_v02`.
 3. Kopeeri fail repo kausta `app/public/` (sinna, kus on `model.onnx`).
-4. Commit („mudel yolo11n_v01“) → Push → Pull request → Merge.
-5. Oota, kuni Actions on roheline. Kontroll: `https://aigonen.github.io/varraste-loendur/yolo11n_v01.onnx` peab alla laadima faili.
+4. Commit („mudel yolo11n_v02“) → Push → Pull request → Merge.
+5. Oota, kuni Actions on roheline. Kontroll: `https://aigonen.github.io/varraste-loendur/yolo11n_v02.onnx` peab alla laadima faili.
 
 ### 2.2 Mudel andmebaasi
 
@@ -101,7 +103,7 @@ Supabase → SQL Editor. Asenda numbrid oma katse tulemustega (`katsed.csv`):
 
 ```sql
 insert into model_version (tag, file_name, conf_threshold, imgsz, test_mae, test_exact, trained_on, is_active)
-values ('yolo11n_v01', 'yolo11n_v01.onnx', 0.35, 1024, 1.8, 0.55, 70, false);
+values ('yolo11n_v02', 'yolo11n_v02.onnx', 0.35, 1024, 1.8, 0.55, 70, false);
 --                                          ^CONF       ^keskm_viga ^täpselt ^train_fotod
 ```
 
@@ -110,7 +112,7 @@ values ('yolo11n_v01', 'yolo11n_v01.onnx', 0.35, 1024, 1.8, 0.55, 70, false);
 ```sql
 begin;
 update model_version set is_active = false where is_active;
-update model_version set is_active = true  where tag = 'yolo11n_v01';
+update model_version set is_active = true  where tag = 'yolo11n_v02';
 commit;
 ```
 
@@ -118,7 +120,7 @@ commit;
 
 ### 2.4 Test telefonis
 
-1. Ava äpp uuesti, vajuta **Laadi mudel** – staatus peab ütlema `Mudel yolo11n_v01 laetud`.
+1. Ava äpp uuesti, vajuta **Laadi mudel** – staatus peab ütlema `Mudel yolo11n_v02 laetud`.
 2. Pildista paar kimpu, mida mudel pole näinud. Kas ringid on varraste otstel?
 3. Kui midagi on väga valesti – lülita tagasi:
    ```sql
@@ -130,7 +132,7 @@ commit;
 
 ### 2.5 Järgmine mudel
 
-Iga uus katse = uus `KATSE_NIMI` (nt `yolo11n_v02`) → uus fail → uus rida tabelis. Vanu faile ära kustuta enne, kui uus on vähemalt nädal laos töötanud.
+Iga uus katse = uus `KATSE_NIMI` (nt `yolo11n_v03`) → uus fail → uus rida tabelis. Vanu faile ära kustuta enne, kui uus on vähemalt nädal laos töötanud.
 
 ---
 

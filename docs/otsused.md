@@ -10,3 +10,8 @@ Iga tehniline otsus, mis kestab üle nädala, kirjutatakse siia – mitte vestlu
 | 2026-09-22 | Mudel jookseb telefoni brauseris (ONNX Runtime Web), leht GitHub Pagesil, andmed Supabase'is | Telefonitest: 3 Androidi, 0,7–0,9 s/pilt WebGPU-l | Ainult kerged mudelid (<~10 MB); RF-DETR jääb välja |
 | 2026-09-22 | Loendusviga on põhimõõdik, mitte mAP | Laole loeb, mitu varrast läks valesti | Notebook otsib conf-läve minimaalse vea järgi |
 | 2026-09-23 | Üks repo GitHubis: kood, notebook, SQL, dokumendid, issue'd | Kolm inimest, 1 päev nädalas – info ei tohi hajuda | Skeemimuudatused ainult SQL-failidena; otsused siia tabelisse |
+
+## Lisaandmed treeninguks (07.10.2026)
+- Kasutame lisaks oma fotodele Roboflow Universe'i datasetti **„object detection“** (autor *jerry*, https://universe.roboflow.com/jerry-4ceaq/object-detection-wrram), 250 armatuurikimbu fotot, litsents **CC BY 4.0** – kasutus lubatud viitega allikale.
+- Forgitud meie Roboflow workspace'i, eksporditud ilma Resize'ita → Drive `varraste-loendur/universe-rebar.zip`.
+- Ainult treeningusse. Valideerimine ja kuldne test = ainult meie oma laofotod.
