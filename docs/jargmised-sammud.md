@@ -22,7 +22,7 @@ Kolm tööd, mis seisavad praegu ees. Järjekord on tähtis: **1 ja 2** annavad 
 
 Täpne juhend on `docs/roboflow-juhend.md`. Lühidalt:
 
-1. app.roboflow.com → projekt **varraste-loendur** → **Upload Data** → fotod üles, partii nimi nt `ladu-2026-10-06`.
+1. app.roboflow.com → workspace **New Workspace** → projekt **varraste-loendur** → **Upload Data** → fotod üles, partii nimi nt `ladu-2026-10-06`.
 2. **Annotate** → iga varda otsa ümber kast (klahv **B**), klass `bar-end`. **Iga ots = üks kast**, ka pooleldi varjatud.
 3. Jagage töö: igaüks võtab ~35 fotot. Roboflow ei anna sama fotot kahele.
 4. Pärast ~30 fotot: **Versions → Generate → Train (Fast)** ja lülita sisse **Label Assist** – ülejäänud lähevad 2–3× kiiremini.
@@ -50,7 +50,7 @@ Täpne juhend on `docs/roboflow-juhend.md`. Lühidalt:
 3. Jaotis **1 · Seaded**: `KATSE_NIMI = yolo11n_v02`, `EPOHHE = 100`, `ANDMED_ALLIKAS = zip`.
    **Iga katse saab uue nime.** `yolo11n_v01` on juba proovijooksuga kasutatud – sama nimega katset notebook uuesti ei treeni (kaustas on `VALMIS.txt`), vaid võtaks vana proovimudeli.
 4. **Runtime → Run all**. Esimene lahter küsib Drive'i ligipääsu – luba.
-   Lisaandmed: kui Drive'is on `universe-rebar.zip`, võetakse need 250 fotot automaatselt treeningusse (`KASUTA_LISA = True`). Väljund näitab rida `Lisaandmed: … → train`.
+   Lisaandmed: kui Drive'is on **täpselt** `varraste-loendur/universe-rebar.zip`, võetakse need 250 fotot automaatselt treeningusse (`KASUTA_LISA = True`). Jaotise 3 väljund peab näitama rida `Lisaandmed: … universe-rebar.zip (rebar) → train`. Kui seal on „Lisaandmeid ei leitud“, kontrolli faili nime.
 5. Treening kestab ~30–60 min (lisaandmetega veidi kauem). Kui Colab vahepeal katkestab: ava notebook uuesti ja **Run all** – jätkab viimasest salvestusest.
 6. Valmis, kui Drive'is on:
    - `varraste-loendur/runs/yolo11n_v02.onnx` – mudel äpi jaoks

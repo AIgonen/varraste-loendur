@@ -8,8 +8,8 @@
 1. Google Drive'i loo kaust `varraste-loendur/` ja pane sinna `proov_dataset.zip` nimega `dataset.zip`.
 2. Ava colab.research.google.com → File → Upload notebook → vali `.ipynb`.
 3. Runtime → Change runtime type → T4 GPU.
-4. Jaotises 1 pane `EPOHHE = 5` (kiire proov) ja Runtime → Run all. Drive'i ligipääsu küsimusele vasta jah.
-5. Kui kõik lahtrid jooksevad läbi ja Drive'is on `runs/yolo11n_v01.onnx` ja `runs/katsed.csv`, on ahel korras.
+4. Jaotises 1 pane `KATSE_NIMI = "proov"`, `EPOHHE = 5` ja `KASUTA_LISA` välja (kiire proov) ja Runtime → Run all. Drive'i ligipääsu küsimusele vasta jah.
+5. Kui kõik lahtrid jooksevad läbi ja Drive'is on `runs/proov.onnx` ja `runs/katsed.csv`, on ahel korras.
 
 ## Päris treening
 1. Roboflow'st: Export → Format "YOLOv11" → Download zip → Drive'i `varraste-loendur/dataset.zip`. (Või jaotises 1 `ANDMED_ALLIKAS = "roboflow"` + API key, siis laeb notebook ise.)
@@ -19,7 +19,7 @@
 5. ONNX-fail Drive'is `runs/<KATSE_NIMI>.onnx` → äppi **oma nimega** (mitte `model.onnx` üle) ja aktiivseks andmebaasis – vt `docs/jargmised-sammud.md` samm 2.
 
 ## Lisaandmed (Roboflow Universe)
-Kui Drive'is on `varraste-loendur/universe-rebar.zip` (250 armatuurifotot, CC BY 4.0), lisab notebook need **ainult treeningusse** (`KASUTA_LISA = True` jaotises 1). Valideerimine ja kuldne test jäävad meie oma fotodeks. Klass `rebar` = meie `bar-end` (mõlemas üks klass). Väljalülitamiseks: `KASUTA_LISA = False`.
+Kui Drive'is on `varraste-loendur/universe-rebar.zip` (250 armatuurifotot, CC BY 4.0; failinimi peab olema täpselt see), lisab notebook need **ainult treeningusse** (`KASUTA_LISA = True` jaotises 1). Valideerimine ja kuldne test jäävad meie oma fotodeks. Klass `rebar` = meie `bar-end` (mõlemas üks klass). Väljalülitamiseks: `KASUTA_LISA = False`.
 
 ## Tulemuste salvestamine
 
