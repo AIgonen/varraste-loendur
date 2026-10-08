@@ -6,7 +6,7 @@ import Login from './Login'
 import Review from './Review'
 import History from './History'
 
-const APP_VERSION = '0.4.0'
+const APP_VERSION = '0.5.0'
 installErrorLog(APP_VERSION)
 
 type Model = { tag: string; file: string; conf: number }

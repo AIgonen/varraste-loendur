@@ -50,13 +50,14 @@ function Row({ r, open, onClick }: { r: HistoryRow; open: string | null | undefi
         <td className="num">{r.predicted_count}</td>
         <td className="num">
           {r.final_count == null ? <span className="muted">kinnitamata</span>
-            : <>{r.final_count}{diff ? <span className="muted"> ({diff > 0 ? '+' : ''}{diff})</span> : null}</>}
+            : <>{r.final_count}{diff ? <span className="muted"> ({diff > 0 ? '+' : ''}{diff})</span> : null}
+                {r.manual_count != null && <span className={r.manual_count === r.final_count ? 'ok' : 'warn-t'} title={`Käsitsi: ${r.manual_count}`}> ✋{r.manual_count}</span>}</>}
         </td>
       </tr>
       {open !== undefined && (
         <tr className="photo"><td colSpan={4}>
           {open ? <img src={open} alt="Loenduse foto" /> : <div className="status">Laen fotot…</div>}
-          <div className="muted small">Mudel: {r.model_tag}</div>
+          <div className="muted small">Mudel: {r.model_tag}{r.manual_count != null ? ` · käsitsi loetud: ${r.manual_count}` : ''}</div>
         </td></tr>
       )}
     </>

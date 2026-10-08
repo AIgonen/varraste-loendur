@@ -53,14 +53,14 @@ export async function bundleId(code: string): Promise<string | null> {
 }
 
 export type HistoryRow = {
-  id: string; created_at: string; predicted_count: number; final_count: number | null
+  id: string; created_at: string; predicted_count: number; final_count: number | null; manual_count: number | null
   photo_path: string; model_tag: string; bundle: { code: string | null } | null
 }
 
 /** Kasutaja viimased loendused (RLS: igaüks näeb ainult enda omi). */
 export async function myCounts(limit = 20): Promise<HistoryRow[]> {
   const { data, error } = await supabase.from('count')
-    .select('id, created_at, predicted_count, final_count, photo_path, model_tag, bundle(code)')
+    .select('id, created_at, predicted_count, final_count, manual_count, photo_path, model_tag, bundle(code)')
     .order('created_at', { ascending: false }).limit(limit)
   if (error) throw error
   return data as unknown as HistoryRow[]
@@ -74,9 +74,14 @@ export async function photoUrl(path: string) {
 }
 
 /** 2) Kui töötaja on parandanud ja vajutab "Kinnita": lõplik arv + kõik otsad lõpliku staatusega. */
-export async function confirmCount(countId: string, finalCount: number, detections: Det[]) {
+export async function confirmCount(countId: string, finalCount: number, detections: Det[], manualCount: number | null = null) {
   const { error } = await supabase.rpc('confirm_count', { p_count_id: countId, p_final_count: finalCount, p_detections: detections })
   if (error) throw error
+  // käsitsi loetud arv (kuldse testi jaoks) – eraldi väli, ei muuda final_count'i
+  if (manualCount != null) {
+    const up = await supabase.from('count').update({ manual_count: manualCount }).eq('id', countId)
+    if (up.error) throw up.error
+  }
 }
 
 /** Püütud viga → error_log + loetav tekst kasutajale (nt "kinnitamine: permission denied for table detection"). */

@@ -17,10 +17,13 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
   const [items, setItems] = useState<Item[]>(() => boxes.map(b => ({ b, kind: 'model', removed: false })))
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [manual, setManual] = useState('')                    // käsitsi üle loetud arv (valikuline)
   const canvas = useRef<HTMLCanvasElement>(null)
   const final = items.filter(i => !i.removed).length
   const removed = items.filter(i => i.removed).length
   const added = items.filter(i => i.kind === 'added').length
+  const manualN = /^\d+$/.test(manual.trim()) ? parseInt(manual.trim(), 10) : null
+  const diff = manualN == null ? 0 : manualN - final
 
   useEffect(() => { draw(canvas.current!, img, items) }, [img, items])
   const zoom = usePinchZoom(onTap)
@@ -60,7 +63,7 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
         confidence: it.kind === 'added' ? null : Math.round(it.b.s * 1000) / 1000,
         status: it.kind === 'added' ? 'added_by_user' : it.removed ? 'removed' : 'confirmed',
       }))
-      await confirmCount(countId, final, dets)
+      await confirmCount(countId, final, dets, manualN)
       onDone(final)
     } catch (err) {
       console.error(err)
@@ -83,6 +86,16 @@ export default function Review({ img, boxes, countId, saveFailed, onDone }: {
         </div>
       </div>
       <div className="hint">Puuduta ringi, et see eemaldada. Puuduta tühja otsa kohta, et lisada. Kahe sõrmega saab suurendada.</div>
+      <label className="manual">Käsitsi loetud arv <span className="muted">(kui lugesid kimbu üle)</span>
+        <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="nt 152" value={manual}
+               onChange={e => setManual(e.target.value.replace(/\D/g, '').slice(0, 5))} />
+      </label>
+      {manualN != null && diff !== 0 && (
+        <div className="warn">
+          Ringe on {final}, käsitsi {manualN} – {diff > 0 ? `${diff} otsa on märkimata` : `${-diff} ringi on liigsed`}?
+          Paranda ringid, kui leiad. Võid kinnitada ka nii – erinevus salvestatakse.
+        </div>
+      )}
       <button className="btn" onClick={onConfirm} disabled={busy || !countId}>
         {busy ? 'Kinnitan…' : countId ? `Kinnita ${final}` : saveFailed ? 'Foto salvestamine ebaõnnestus' : 'Salvestan fotot…'}
       </button>
