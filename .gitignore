@@ -7,3 +7,6 @@ runs/
 dataset/
 dataset.zip
 .DS_Store
+
+# Toorfotod – ei lähe Giti (suured, kuuluvad Roboflow/Drive-i)
+Vision Count proovipildid/
