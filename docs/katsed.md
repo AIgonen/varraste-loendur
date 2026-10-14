@@ -7,6 +7,8 @@ Mõõdetud kuldsel testil (30 fotot, mida mudel treeningus ei näinud).
 |---|---|---|---|---|---|---|---|---|---|
 | 2026-09-28 | yolo11n_v01 | yolo11n.pt | 4 | 0.1 | 60 | 0% | 0% | 60 | **Proovijooks** (proov_dataset, 5 epohhi) – ainult ahela kontroll, mudel kõlbmatu |
 | 2026-10-14 | yolo11n_v02 | yolo11n.pt | 128 | 0.1 | 94.19 | 0% | 0% | 306 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
+| 2026-10-14 | yolo11n_v10 | yolo11n.pt | 128 | 0.25 | 7.78 | 31% | 72% | 148 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
+| 2026-10-14 | yolo11n_v11 | yolo11n.pt | 128 | 0.25 | 7.78 | 31% | 72% | 148 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
 
 **Kuidas lugeda:** keskm. viga = mitu varrast keskmiselt valesti (väiksem parem); täpselt õige = mitmel fotol arv täpselt õige (suurem parem).
 Märkustesse: mis muutus võrreldes eelmise katsega (rohkem fotosid, teine mudel, uus pildistamisviis …).
