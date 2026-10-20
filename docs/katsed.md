@@ -15,7 +15,7 @@ Mõõdetud kuldsel testil (30 fotot, mida mudel treeningus ei näinud).
 | 2026-10-15 | yolo11n_v16 | yolo11n.pt | 507 | 0.35 | 7.25 | 38% | 84% | 148 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
 | 2026-10-20 | yolo11n_v18 | yolo11n.pt | 507 | 0.3 | 7.41 | 31% | 81% | 147 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
 | 2026-10-20 | yolo11n_v19 | yolo11n.pt | 507 | 0.3 | 7.31 | 41% | 81% | 148 | „treening: ainult Universe 250, test: meie kuldne test 32“ |
-| 2026-10-20 | yolo11n_v20 | yolo11n.pt | 527 | 0.15 | 7.62 | 25% | 72% | 147 | „treening: Universe 250 + 10uut fotot galeriist, test: meie kuldne test 32“ |
+| 2026-10-20 | yolo11n_v20 | yolo11n.pt | 527 | 0.15 | 7.62 | 25% | 72% | 147 | „treening: Universe 250 + 10uut fotot meie galeriist, test: meie kuldne test 32“ |
 
 **Kuidas lugeda:** keskm. viga = mitu varrast keskmiselt valesti (väiksem parem); täpselt õige = mitmel fotol arv täpselt õige (suurem parem).
 Märkustesse: mis muutus võrreldes eelmise katsega (rohkem fotosid, teine mudel, uus pildistamisviis …).
