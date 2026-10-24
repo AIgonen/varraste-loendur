@@ -44,3 +44,17 @@ canvas[hidden] { display: none }
 .manual input { font-size: 20px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; width: 10em; background: var(--surface) }
 .warn { background: #fbf4dc; border-left: 4px solid var(--accent); padding: 8px 10px; font-size: 14px; border-radius: 4px; margin: 6px 0 }
 .warn-t { color: #b8531f }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.row2 .btn { margin: 8px 0 0 }
+.roilayer { position: absolute; inset: 0; cursor: crosshair; touch-action: none; z-index: 2 }
+.tune { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin: 10px 0 }
+.tune summary { font-weight: 600; cursor: pointer; padding: 4px 0 }
+.tune[open] summary { margin-bottom: 6px }
+.slider { display: grid; gap: 2px; margin: 10px 0 }
+.sl-head { display: flex; justify-content: space-between; font-size: 15px }
+.sl-head span { font-variant-numeric: tabular-nums; color: var(--ink2) }
+.slider input[type=range] { width: 100%; height: 32px; accent-color: var(--ink) }
+.sl-help { font-size: 12px; color: var(--ink2) }
+.small-btn { padding: 10px; font-size: 15px }
+.btn.on { border-color: var(--accent); background: #fbf4dc }
+.link:disabled { opacity: .4; cursor: default }

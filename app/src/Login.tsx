@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase } from './lib/supabase'
 
 // Sisselogimine: e-post + PIN-parool. Kasutajad luuakse Supabase'i paneelis (Authentication → Users).
-export default function Login() {
+export default function Login({ onDemo }: { onDemo: () => void }) {
   const [email, setEmail] = useState(() => localStorage.getItem('vl_email') ?? '')
   const [pin, setPin] = useState('')
   const [busy, setBusy] = useState(false)
@@ -30,6 +30,8 @@ export default function Login() {
         <button className="btn" disabled={busy}>{busy ? 'Sisenen…' : 'Logi sisse'}</button>
         {error && <div className="error">{error}</div>}
       </form>
+      <button className="btn sec" onClick={onDemo}>Proovi ilma kontota (demo)</button>
+      <div className="hint">Demorežiimis saab fotot loendada, seadeid muuta ja tulemuse alla laadida. Midagi ei salvestata.</div>
     </div>
   )
 }
