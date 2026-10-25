@@ -24,6 +24,8 @@ Mõõdetud kuldsel testil (30 fotot, mida mudel treeningus ei näinud).
 | 2026-10-23 | yolo11n_v26 | yolo11n.pt | 508 | 0.35 | 1.97 | 34% | 78% | 12 | „treening: meie galerii +universe-rebar, EPOHHE 100 (train: meie 258 +universe 250 + valid: 40 + test: meie kuldne test 32“ |
 | 2026-10-24 | yolo11n_v27 | yolo11n.pt | 508 | 0.35 | 1.97 | 34% | 78% | 12 | „treening: meie galerii +universe-rebar, EPOHHE 100 (train: meie 258 +universe 250 + valid: 40 + test: meie kuldne test 32“ |
 | 2026-10-24 | yolo11n_v28 | yolo11n.pt | 508 | 0.35 | 1.97 | 34% | 78% | 12 | „treening: meie galerii +universe-rebar, EPOHHE 100 (train: meie 258 +universe 250 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-24 | yolo11n_v29 | yolo11n.pt | 258 | 0.3 | 1.53 | 53% | 81% | 11 | „treening: meie galerii, EPOHHE 100 (train: meie 258 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-25 | yolo11n_v30 | yolo11n.pt | 258 | 0.3 | 1.53 | 53% | 81% | 11 | „treening: meie galerii, EPOHHE 100 (train: meie 258 + valid: 40 + test: meie kuldne test 32“ |
 
 **Kuidas lugeda:** keskm. viga = mitu varrast keskmiselt valesti (väiksem parem); täpselt õige = mitmel fotol arv täpselt õige (suurem parem).
 Märkustesse: mis muutus võrreldes eelmise katsega (rohkem fotosid, teine mudel, uus pildistamisviis …).
