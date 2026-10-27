@@ -28,7 +28,11 @@ Mõõdetud kuldsel testil (30 fotot, mida mudel treeningus ei näinud).
 | 2026-10-25 | yolo11n_v30 | yolo11n.pt | 258 | 0.3 | 1.53 | 53% | 81% | 11 | „treening: meie galerii, EPOHHE 100 (train: meie 258 + valid: 40 + test: meie kuldne test 32“ |
 | 2026-10-26 | yolo11n_v31 | yolo11n.pt | 266 | 0.3 | 1.81 | 41% | 78% | 13 | „treening: meie galerii, EPOHHE 100 (train: meie 266 + valid: 40 + test: meie kuldne test 32“ |
 | 2026-10-26 | yolo11n_v32 | yolo11n.pt | 200 | 0.5 | 10.44 | 4% | 28% | 86 | "treening: object detection galeriiga (kokku 250 pilti: 200train+25valid+25test)
-| 2026-10-26 | yolo11n_v33 | yolo11n.pt | 266 | 0.3 | 1.53 | 41% | 78% | 10 | „treening: meie galerii, korrigeeritud v31 märgistamine (train: meie 266 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-26 | yolo11n_v33 | yolo11n.pt | 266 | 0.3 | 1.53 | 41% | 78% | 10 | „treening: meie galerii, korrigeeritud v31 märgistamine, EPOHHE 100 (train: meie 266 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-27 | yolo11n_v34 | yolo11n.pt | 266 | 0.35 | 2.16 | 38% | 78% | 22 | „treening: meie galerii, korrigeeritud v31 märgistamine, EPOHHE 150 (train: meie 266 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-27 | yolo11n_v35 | yolo11n.pt | 266 | 0.3 | 1.44 | 34% | 84% | 9 | „treening: meie galerii, korrigeeritud v31 märgistamine, EPOHHE 200 (train: meie 266 + valid: 40 + test: meie kuldne test 32“ |
+| 2026-10-27 | yolo11n_v36 | yolo11n.pt | 266 | 0.25 | 1.59 | 44% | 75% | 7 | "yolo11n_v33, seed=1"
+| 2026-10-27 | yolo11n_v37 | yolo11n.pt | 266 | 0.3 | 1.47 | 38% | 84% | 8 | "yolo11n_v33, seed=2"
 
 **Kuidas lugeda:** keskm. viga = mitu varrast keskmiselt valesti (väiksem parem); täpselt õige = mitmel fotol arv täpselt õige (suurem parem).
 Märkustesse: mis muutus võrreldes eelmise katsega (rohkem fotosid, teine mudel, uus pildistamisviis …).
